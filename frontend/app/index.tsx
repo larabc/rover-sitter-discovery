@@ -1,25 +1,33 @@
-import { View, Text, Button } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
+import CustomButton from "../src/components/CustomButton"
 import React from 'react'
 import { useRouter } from 'expo-router';
-
+import { colors, spacing, textSizes } from '../src/constants/theme';
 
 export default function App() {
     const router = useRouter();
 
 
     return (
-        <View>
-            <Text>You are a dog...</Text>
-            <Button
-                onPress={() => router.push('/(sitter)/availability')}
-                title="Go to Sitter Role"
-                accessibilityLabel="Button that goes to sitter availaibilty page"
-            />
-            <Button
-                onPress={() => router.push('/(owner)/search')}
-                title="Go to Owner Role"
-                accessibilityLabel="Button that goes to owner role search page"
-            />
+        <View style={styles.container}>
+            <Text style={styles.text}>You are a dog...</Text>
+            <CustomButton label="Sitter" onPressFn={() => router.push('/(sitter)/availability')} accesibilityLabel='Button that goes to sitter availaibilty page'></CustomButton>
+            <CustomButton label="Owner" onPressFn={() => router.push('/(owner)/search')} accesibilityLabel='Button that goes to owner role search page'></CustomButton>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: spacing.lg,
+        gap: spacing.md,
+    },
+    text: {
+        color: colors.primary,
+        fontSize: textSizes.title,
+        textAlign: 'center',
+        fontWeight: 'bold',
+    }
+});
