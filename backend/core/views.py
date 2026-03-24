@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import datetime
@@ -9,6 +9,21 @@ from .serializers import SitterSerializer, AvailableSlotSerializer
 class AvailableSlotViewSet(viewsets.ModelViewSet):
     queryset = AvailableSlot.objects.all()
     serializer_class = AvailableSlotSerializer
+
+    def list(self, request):
+        try:
+            id = int(request.query_params.get("id"))
+
+        except (ValueError, TypeError):
+            return Response(
+                {"error": "id must be a valid number"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        slots = AvailableSlot.objects.filter(sitter_id=id)
+        serializer = AvailableSlotSerializer(slots, many=True)
+
+        return Response(serializer.data)
 
 
 class SitterViewSet(viewsets.ModelViewSet):
