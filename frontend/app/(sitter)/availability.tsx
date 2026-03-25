@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import { spacing } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
 import BASE_URL from '../../src/api/client';
-
+import CustomButton from "../../src/components/CustomButton"
 
 export default function Availability() {
     const router = useRouter();
@@ -22,6 +22,7 @@ export default function Availability() {
 
     const days = Object.values(DayOfWeek).filter(v => typeof v === 'number')
 
+    //add loading state
     useEffect(() => {
         async function fetchSlots() {
             try {
@@ -39,6 +40,7 @@ export default function Availability() {
 
     return (
         <View>
+            <CustomButton label="Back" onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />
             <Text >My availability</Text>
             <View style={styles.container}>
 
