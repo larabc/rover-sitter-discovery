@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { AvailabilitySlot, DayOfWeek } from '../../src/types/availability'
 import { useRouter } from 'expo-router';
 import { spacing } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
+import BASE_URL from '../../src/api/client';
 
 
 export default function Availability() {
@@ -20,6 +21,21 @@ export default function Availability() {
     }
 
     const days = Object.values(DayOfWeek).filter(v => typeof v === 'number')
+
+    useEffect(() => {
+        async function fetchSlots() {
+            try {
+                const response = await fetch(BASE_URL + '/slots/?id=1')
+                if (response.ok) {
+                    const availability_slots = await response.json()
+                    setAvailabilitySlots(availability_slots)
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchSlots()
+    }, [])
 
     return (
         <View>
