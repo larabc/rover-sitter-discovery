@@ -2,6 +2,8 @@ export const colors = {
     primary: '#404347',
     border: '#C9CFD4',
     white: '#FFFFFF',
+    accent: '#2e67d1',
+    disabled: '#62686E'
 };
 
 export const spacing = {
