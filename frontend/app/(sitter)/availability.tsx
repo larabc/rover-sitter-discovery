@@ -6,6 +6,7 @@ import { spacing } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
 import BASE_URL from '../../src/api/client';
 import CustomButton from "../../src/components/CustomButton"
+import { timeStringToDate } from '../../src/utils/timeUtils';
 
 export default function Availability() {
     const router = useRouter();
@@ -40,8 +41,27 @@ export default function Availability() {
         fetchSlots()
     }, [])
 
+    const getDefaultSlotTimes = (day: number): { start_time: string, end_time: string } => {
+        const slotsForDay = availabilitySlots.filter(slot => slot.day_of_week === day)
+        const lastSlot = slotsForDay[slotsForDay.length - 1]
+        let start_time: string = '09:00:00'
+        let end_time: string = '18:00:00'
+        if (lastSlot) {
+            const start = Math.min(timeStringToDate(lastSlot.end_time).getHours() + 2, 22)
+            const end = Math.min(start + 4, 23)
+            start_time = start.toString() + ':00:00'
+            end_time = end.toString() + ':00:00'
+        }
+
+        return { start_time, end_time }
+    }
+
     const handleAddSlot = (day: number) => {
-        const newAvailableSlot: AvailabilitySlot = { start_time: Date(), end_time: Date(), day_of_week: day, id: Math.random() }
+        const { start_time, end_time } = getDefaultSlotTimes(day)
+        const newAvailableSlot: AvailabilitySlot = {
+            start_time: start_time,
+            end_time: end_time, day_of_week: day, id: Math.random()
+        }
         setAvailabilitySlots([...availabilitySlots, newAvailableSlot])
     }
     const handleDeleteSlot = (id: number) => {
