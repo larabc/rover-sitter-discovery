@@ -6,10 +6,12 @@ import { CirclePlus, Ban } from 'lucide-react-native'
 import { colors, spacing } from '../constants/theme'
 
 interface SlotRowProps {
-    slot: AvailabilitySlot
+    slot: AvailabilitySlot,
+    onDeleteSlot: (id: number) => void,
+    onAddSlot: () => void
 }
 
-export default function SlotRow({ slot }: SlotRowProps) {
+export default function SlotRow({ slot, onDeleteSlot, onAddSlot }: SlotRowProps) {
 
     const timeStringToDate = (timeString: string): Date => {
         const [hours, minutes] = timeString.split(':');
@@ -35,10 +37,10 @@ export default function SlotRow({ slot }: SlotRowProps) {
                 />
             </View>
             <View style={styles.btnsContainer}>
-                <Pressable>
+                <Pressable onPress={() => onDeleteSlot(slot.id)}>
                     <Ban />
                 </Pressable>
-                <Pressable>
+                <Pressable onPress={onAddSlot}>
                     <CirclePlus color={colors.accent} />
                 </Pressable>
             </View>

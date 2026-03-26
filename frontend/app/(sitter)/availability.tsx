@@ -22,6 +22,8 @@ export default function Availability() {
 
     const days = Object.values(DayOfWeek).filter(v => typeof v === 'number')
 
+
+
     //add loading state
     useEffect(() => {
         async function fetchSlots() {
@@ -38,15 +40,22 @@ export default function Availability() {
         fetchSlots()
     }, [])
 
+    const handleAddSlot = (day: number) => {
+        const newAvailableSlot: AvailabilitySlot = { start_time: Date(), end_time: Date(), day_of_week: day, id: Math.random() }
+        setAvailabilitySlots([...availabilitySlots, newAvailableSlot])
+    }
+    const handleDeleteSlot = (id: number) => {
+        setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
+    }
     return (
         <View>
             <CustomButton label="Back" onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />
-            <Text >My availability</Text>
+            <Text>My availability</Text>
             <View style={styles.container}>
 
                 {
                     days.map((day) => (
-                        <WeekDayManager key={day} day={DayOfWeek[day]} slots={groupSlotsByDay(availabilitySlots)[day]} />
+                        <WeekDayManager key={day} day={day} slots={groupSlotsByDay(availabilitySlots)[day]} onAddSlot={() => handleAddSlot(day)} onDeleteSlot={handleDeleteSlot} />
                     ))
                 }
 

@@ -1,30 +1,34 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import React from 'react'
-import { AvailabilitySlot } from '../types/availability'
+import { AvailabilitySlot, DayOfWeek } from '../types/availability'
 import { colors, spacing, textSizes } from '../../src/constants/theme';
 import SlotRow from '../../src/components/SlotRow';
 import { CirclePlus } from 'lucide-react-native';
 
 interface WeekDayManagerProps {
-    day: string,
-    slots: AvailabilitySlot[]
+    day: number,
+    slots: AvailabilitySlot[],
+    onAddSlot: () => void,
+    onDeleteSlot: (id: number) => void,
 }
-export default function WeekDayManager({ day, slots }: WeekDayManagerProps) {
+
+export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot }: WeekDayManagerProps) {
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
-                {day}
+                {DayOfWeek[day]}
             </Text>
             <View style={styles.container}>
                 {
                     slots && slots.length > 0 ? (
                         slots.map(slot =>
-                            <SlotRow key={slot.id} slot={slot} />
+                            <SlotRow key={slot.id} slot={slot} onDeleteSlot={onDeleteSlot} onAddSlot={onAddSlot} />
                         )
                     ) : (
                         <View style={styles.unavailableContainer}>
                             <Text style={styles.unavailableText}>Unavailable</Text>
-                            <Pressable>
+                            <Pressable onPress={onAddSlot}>
                                 <CirclePlus color={colors.accent} />
                             </Pressable>
                         </View>
