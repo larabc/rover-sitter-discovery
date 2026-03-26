@@ -4,6 +4,7 @@ import { AvailabilitySlot } from '../types/availability'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { CirclePlus, Ban } from 'lucide-react-native'
 import { colors, spacing } from '../constants/theme'
+import { timeStringToDate } from '../utils/timeUtils'
 
 interface SlotRowProps {
     slot: AvailabilitySlot,
@@ -12,15 +13,6 @@ interface SlotRowProps {
 }
 
 export default function SlotRow({ slot, onDeleteSlot, onAddSlot }: SlotRowProps) {
-
-    const timeStringToDate = (timeString: string): Date => {
-        const [hours, minutes] = timeString.split(':');
-        const date = new Date();
-        date.setHours(parseInt(hours));
-        date.setMinutes(parseInt(minutes));
-        date.setSeconds(0);
-        return date;
-    }
 
     return (
         <View style={styles.container}>
