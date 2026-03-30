@@ -6,3 +6,7 @@ export const timeStringToDate = (timeString: string): Date => {
     date.setSeconds(0);
     return date;
 }
+
+export const hoursToTimeString = (hours: number): string => {
+    return hours.toString().padStart(2, '0') + ':00:00'
+}
