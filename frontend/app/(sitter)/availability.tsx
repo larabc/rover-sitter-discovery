@@ -6,7 +6,7 @@ import { spacing } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
 import BASE_URL from '../../src/api/client';
 import CustomButton from "../../src/components/CustomButton"
-import { timeStringToDate } from '../../src/utils/timeUtils';
+import { hoursToTimeString } from '../../src/utils/timeUtils';
 
 export default function Availability() {
     const router = useRouter();
@@ -47,10 +47,11 @@ export default function Availability() {
         let start_time: string = '09:00:00'
         let end_time: string = '18:00:00'
         if (lastSlot) {
-            const start = Math.min(timeStringToDate(lastSlot.end_time).getHours() + 2, 22)
+            const start = Math.min(parseInt(lastSlot.end_time.split(':')[0])
+                + 2, 22)
             const end = Math.min(start + 4, 23)
-            start_time = start.toString() + ':00:00'
-            end_time = end.toString() + ':00:00'
+            start_time = hoursToTimeString(start)
+            end_time = hoursToTimeString(end)
         }
 
         return { start_time, end_time }
