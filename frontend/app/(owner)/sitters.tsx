@@ -5,6 +5,7 @@ import BASE_URL from '../../src/api/client'
 import { Sitter } from '../../src/types/Sitter'
 import CustomButton from '../../src/components/CustomButton'
 import { colors, layoutStyles, textStyles } from '../../src/constants/theme'
+import SitterCard from '../../src/components/SitterCard'
 
 export default function Sitters() {
     const { date, start_time, end_time } = useLocalSearchParams()
@@ -48,9 +49,7 @@ export default function Sitters() {
 
                     sitters.length > 0 ? (
                         sitters.map((sitter) => (
-                            <View key={sitter.id}>
-                                <Text>{sitter.name}</Text>
-                            </View>
+                            <SitterCard key={sitter.id} sitter={sitter} />
                         ))
                     ) : (
                         <Text style={textStyles.sectionHeader}>No sitters available</Text>
