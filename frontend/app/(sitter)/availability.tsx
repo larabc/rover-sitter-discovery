@@ -57,17 +57,53 @@ export default function Availability() {
         return { start_time, end_time }
     }
 
-    const handleAddSlot = (day: number) => {
+    const handleAddSlot = async (day: number) => {
         const { start_time, end_time } = getDefaultSlotTimes(day)
-        const newAvailableSlot: AvailabilitySlot = {
-            start_time: start_time,
-            end_time: end_time, day_of_week: day, id: Math.random()
-        }
-        setAvailabilitySlots([...availabilitySlots, newAvailableSlot])
+
+        const response = await fetch(`${BASE_URL}/slots/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ start_time, end_time, day_of_week: day, sitter: 1 }) //set sitter 1 hardcoded
+        })
+        const newSlot = await response.json()
+        setAvailabilitySlots([...availabilitySlots, newSlot])
     }
-    const handleDeleteSlot = (id: number) => {
+
+    const handleDeleteSlot = async (id: number) => {
+        const response = await fetch(`${BASE_URL}/slots/${id}/`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        })
+
         setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
     }
+
+    const handleUpdateSlot = async (slot: AvailabilitySlot, time: string, selectedTime?: Date) => {
+
+        let start_time = slot.start_time;
+        let end_time = slot.end_time;
+
+        if (time === 'start_time' && selectedTime) {
+            start_time = hoursToTimeString(selectedTime.getHours())
+        }
+
+        if (time === 'end_time' && selectedTime) {
+            end_time = hoursToTimeString(selectedTime.getHours())
+        }
+
+
+        const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: 1 }) //hardcoded sitter id: 1
+        })
+
+        const updatedSlot = await response.json()
+
+        setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
+    }
+
+
     return (
         <View>
             <CustomButton label="Back" onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />
@@ -76,7 +112,7 @@ export default function Availability() {
 
                 {
                     days.map((day) => (
-                        <WeekDayManager key={day} day={day} slots={groupSlotsByDay(availabilitySlots)[day]} onAddSlot={() => handleAddSlot(day)} onDeleteSlot={handleDeleteSlot} />
+                        <WeekDayManager key={day} day={day} slots={groupSlotsByDay(availabilitySlots)[day]} onAddSlot={() => handleAddSlot(day)} onDeleteSlot={handleDeleteSlot} onUpdateSlot={handleUpdateSlot} />
                     ))
                 }
 

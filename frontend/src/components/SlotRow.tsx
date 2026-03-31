@@ -9,10 +9,11 @@ import { timeStringToDate } from '../utils/timeUtils'
 interface SlotRowProps {
     slot: AvailabilitySlot,
     onDeleteSlot: (id: number) => void,
-    onAddSlot: () => void
+    onAddSlot: () => void,
+    onUpdateSlot: (slot: AvailabilitySlot, time: string, selectedTime?: Date) => void,
 }
 
-export default function SlotRow({ slot, onDeleteSlot, onAddSlot }: SlotRowProps) {
+export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot }: SlotRowProps) {
 
     return (
         <View style={styles.container}>
@@ -20,13 +21,23 @@ export default function SlotRow({ slot, onDeleteSlot, onAddSlot }: SlotRowProps)
                 <DateTimePicker
                     value={timeStringToDate(slot.start_time)}
                     mode="time"
-                    onChange={(event, selectedDate) => { }}
+                    onChange={(event, selectedTime) => {
+                        if (event.type === 'set') {
+                            onUpdateSlot(slot, 'start_time', selectedTime)
+                        }
+                    }
+                    }
                 />
                 <DateTimePicker
                     value={timeStringToDate(slot.end_time)}
                     mode="time"
-                    onChange={(event, selectedDate) => { }}
-                />
+
+                    onChange={(event, selectedTime) => {
+                        if (event.type === 'set') {
+                            onUpdateSlot(slot, 'end_time', selectedTime)
+                        }
+                    }
+                    } />
             </View>
             <View style={styles.btnsContainer}>
                 <Pressable onPress={() => onDeleteSlot(slot.id)}>
