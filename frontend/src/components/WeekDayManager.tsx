@@ -10,9 +10,10 @@ interface WeekDayManagerProps {
     slots: AvailabilitySlot[],
     onAddSlot: () => void,
     onDeleteSlot: (id: number) => void,
+    onUpdateSlot: (slot: AvailabilitySlot, time: string, selectedDate?: Date) => void
 }
 
-export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot }: WeekDayManagerProps) {
+export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, onUpdateSlot }: WeekDayManagerProps) {
 
     return (
         <View style={styles.container}>
@@ -23,7 +24,7 @@ export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot }: 
                 {
                     slots && slots.length > 0 ? (
                         slots.map(slot =>
-                            <SlotRow key={slot.id} slot={slot} onDeleteSlot={onDeleteSlot} onAddSlot={onAddSlot} />
+                            <SlotRow key={slot.id} slot={slot} onDeleteSlot={onDeleteSlot} onAddSlot={onAddSlot} onUpdateSlot={onUpdateSlot} />
                         )
                     ) : (
                         <View style={styles.unavailableContainer}>
