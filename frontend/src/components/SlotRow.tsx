@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { AvailabilitySlot } from '../types/availability'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { CirclePlus, Ban, SeparatorHorizontal } from 'lucide-react-native'
-import { colors, spacing } from '../constants/theme'
+import { colors, layoutStyles, spacing } from '../constants/theme'
 import { timeStringToDate } from '../utils/timeUtils'
 import TimePicker from './TimePicker'
 
@@ -12,9 +12,10 @@ interface SlotRowProps {
     onDeleteSlot: (id: number) => void,
     onAddSlot: () => void,
     onUpdateSlot: (slot: AvailabilitySlot, time: string, selectedTime?: Date) => void,
+    loadingSlotId: number | null
 }
 
-export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot }: SlotRowProps) {
+export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, loadingSlotId }: SlotRowProps) {
 
     return (
         <View style={styles.container}>
@@ -30,9 +31,18 @@ export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot }:
                 />
             </View>
             <View style={styles.btnsContainer}>
-                <Pressable onPress={() => onDeleteSlot(slot.id)}>
-                    <Ban />
-                </Pressable>
+                {
+                    slot.id === loadingSlotId ? (
+                        <View style={layoutStyles.loadingContainer}>
+                            <ActivityIndicator size="small" color={colors.accent} />
+                        </View>
+                    ) : (
+                        <Pressable onPress={() => onDeleteSlot(slot.id)}>
+                            <Ban />
+                        </Pressable>
+                    )
+                }
+
                 <Pressable onPress={onAddSlot}>
                     <CirclePlus color={colors.accent} />
                 </Pressable>

@@ -13,6 +13,8 @@ export default function Availability() {
 
     const [availabilitySlots, setAvailabilitySlots] = useState<AvailabilitySlot[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [loadingDay, setLoadingDay] = useState<null | number>(null)
+    const [loadingSlotId, setLoadingSlotId] = useState<null | number>(null)
 
     const groupSlotsByDay = (slots: AvailabilitySlot[]): Record<number, AvailabilitySlot[]> => {
         return slots.reduce((slotsByDay, slot) => {
@@ -58,7 +60,7 @@ export default function Availability() {
     }
 
     const handleAddSlot = async (day: number) => {
-        setIsLoading(true)
+        setLoadingDay(day)
         const { start_time, end_time } = getDefaultSlotTimes(day)
 
         const response = await fetch(`${BASE_URL}/slots/`, {
@@ -68,11 +70,11 @@ export default function Availability() {
         })
         const newSlot = await response.json()
         setAvailabilitySlots([...availabilitySlots, newSlot])
-        setIsLoading(false)
+        setLoadingDay(null)
     }
 
     const handleDeleteSlot = async (id: number) => {
-        setIsLoading(true)
+        setLoadingSlotId(id)
 
         const response = await fetch(`${BASE_URL}/slots/${id}/`, {
             method: 'DELETE',
@@ -80,11 +82,13 @@ export default function Availability() {
         })
 
         setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
-        setIsLoading(false)
+        setLoadingSlotId(null)
+
     }
 
     const handleUpdateSlot = async (slot: AvailabilitySlot, time: string, selectedTime?: Date) => {
-        setIsLoading(true)
+        setLoadingSlotId(slot.id)
+
 
         let start_time = slot.start_time;
         let end_time = slot.end_time;
@@ -107,7 +111,7 @@ export default function Availability() {
         const updatedSlot = await response.json()
 
         setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
-        setIsLoading(false)
+        setLoadingSlotId(null)
     }
 
 
@@ -123,7 +127,7 @@ export default function Availability() {
                         </View>
                     ) :
                         days.map((day) => (
-                            <WeekDayManager key={day} day={day} slots={groupSlotsByDay(availabilitySlots)[day]} onAddSlot={() => handleAddSlot(day)} onDeleteSlot={handleDeleteSlot} onUpdateSlot={handleUpdateSlot} />
+                            <WeekDayManager key={day} day={day} slots={groupSlotsByDay(availabilitySlots)[day]} onAddSlot={() => handleAddSlot(day)} onDeleteSlot={handleDeleteSlot} onUpdateSlot={handleUpdateSlot} isAddingSlot={loadingDay === day} loadingSlotId={loadingSlotId} />
                         ))
                 }
 

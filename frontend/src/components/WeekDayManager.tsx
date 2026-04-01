@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { AvailabilitySlot, DayOfWeek } from '../types/availability'
-import { colors, spacing, textSizes } from '../../src/constants/theme';
+import { colors, layoutStyles, spacing, textSizes } from '../../src/constants/theme';
 import SlotRow from '../../src/components/SlotRow';
 import { CirclePlus } from 'lucide-react-native';
 
@@ -10,10 +10,12 @@ interface WeekDayManagerProps {
     slots: AvailabilitySlot[],
     onAddSlot: () => void,
     onDeleteSlot: (id: number) => void,
-    onUpdateSlot: (slot: AvailabilitySlot, time: string, selectedDate?: Date) => void
+    onUpdateSlot: (slot: AvailabilitySlot, time: string, selectedDate?: Date) => void,
+    isAddingSlot: boolean,
+    loadingSlotId: null | number
 }
 
-export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, onUpdateSlot }: WeekDayManagerProps) {
+export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, onUpdateSlot, isAddingSlot, loadingSlotId }: WeekDayManagerProps) {
 
     return (
         <View style={styles.container}>
@@ -23,9 +25,13 @@ export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, on
             <View style={styles.container}>
                 {
                     slots && slots.length > 0 ? (
-                        slots.map(slot =>
-                            <SlotRow key={slot.id} slot={slot} onDeleteSlot={onDeleteSlot} onAddSlot={onAddSlot} onUpdateSlot={onUpdateSlot} />
-                        )
+                        <>
+                            {slots.map(slot => (
+                                < SlotRow key={slot.id} slot={slot} onDeleteSlot={onDeleteSlot} onAddSlot={onAddSlot} onUpdateSlot={onUpdateSlot} loadingSlotId={loadingSlotId} />
+                            ))}
+                            {isAddingSlot && (
+                                <ActivityIndicator size="small" color={colors.accent} />)}
+                        </>
                     ) : (
                         <View style={styles.unavailableContainer}>
                             <Text style={styles.unavailableText}>Unavailable</Text>
