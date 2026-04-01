@@ -41,8 +41,8 @@ export const layoutStyles = {
     generalContainer: {
         padding: spacing.lg,
         flex: 1,
-
     },
+
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',
