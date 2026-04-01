@@ -21,3 +21,26 @@ export const textSizes = {
     title: 24,
     paragraph: 16,
 }
+
+export const textStyles = {
+    displayHeader: {
+        fontSize: textSizes.title,
+        fontWeight: 'bold' as const,
+    },
+    sectionHeader: {
+        color: colors.primary,
+        fontWeight: 'bold' as const,
+    },
+    paragraph: {
+        fontSize: textSizes.paragraph,
+        color: colors.primary,
+    },
+}
+
+export const layoutStyles = {
+    generalContainer: {
+        padding: spacing.lg,
+        flex: 1,
+
+    },
+}
