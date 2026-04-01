@@ -2,7 +2,7 @@
 import React from 'react'
 import { timeStringToDate } from '../utils/timeUtils'
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
-import { Platform, Pressable, Text, StyleSheet } from 'react-native'
+import { Platform, Pressable, Text, StyleSheet, View } from 'react-native'
 import { colors, spacing } from '../constants/theme'
 
 
@@ -32,17 +32,19 @@ export default function TimePicker({ value, onChange, disabled }: TimePickerProp
     }
 
     return (
-        <DateTimePicker
-            value={timeStringToDate(value)}
-            mode="time"
-            display='compact'
-            disabled={disabled}
-            onChange={(event, selectedDate) => {
-                if (event.type === 'set' && selectedDate) {
-                    onChange(selectedDate)
-                }
-            }}
-        />
+        <View style={disabled && { opacity: 0.4 }}>
+            <DateTimePicker
+                value={timeStringToDate(value)}
+                mode="time"
+                display='compact'
+                disabled={disabled}
+                onChange={(event, selectedDate) => {
+                    if (event.type === 'set' && selectedDate) {
+                        onChange(selectedDate)
+                    }
+                }}
+            />
+        </View>
     )
 }
 
