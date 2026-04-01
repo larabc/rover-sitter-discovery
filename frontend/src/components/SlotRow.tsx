@@ -12,10 +12,13 @@ interface SlotRowProps {
     onDeleteSlot: (id: number) => void,
     onAddSlot: () => void,
     onUpdateSlot: (slot: AvailabilitySlot, time: string, selectedTime?: Date) => void,
-    loadingSlotId: number | null
+    loadingSlotId: number | null,
+    isDisabled: boolean
 }
 
-export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, loadingSlotId }: SlotRowProps) {
+export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, loadingSlotId,
+    isDisabled
+}: SlotRowProps) {
 
     return (
         <View style={styles.container}>
@@ -23,19 +26,20 @@ export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, l
                 <TimePicker
                     value={slot.start_time}
                     onChange={(selectedDate) => onUpdateSlot(slot, 'start_time', selectedDate)}
+                    disabled={isDisabled}
                 />
                 <Text style={styles.separator}>-</Text>
                 <TimePicker
                     value={slot.end_time}
                     onChange={(selectedDate) => onUpdateSlot(slot, 'end_time', selectedDate)}
+                    disabled={isDisabled}
+
                 />
             </View>
             <View style={styles.btnsContainer}>
                 {
                     slot.id === loadingSlotId ? (
-                        <View style={layoutStyles.loadingContainer}>
-                            <ActivityIndicator size="small" color={colors.accent} />
-                        </View>
+                        <ActivityIndicator size="small" color={colors.accent} />
                     ) : (
                         <Pressable onPress={() => onDeleteSlot(slot.id)}>
                             <Ban />

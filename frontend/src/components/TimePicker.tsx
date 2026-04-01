@@ -9,12 +9,13 @@ import { colors, spacing } from '../constants/theme'
 interface TimePickerProps {
     value: string,
     onChange: (selectedDate: Date) => void,
+    disabled?: boolean
 }
 
-export default function TimePicker({ value, onChange }: TimePickerProps) {
+export default function TimePicker({ value, onChange, disabled }: TimePickerProps) {
     if (Platform.OS === 'android') {
         return (
-            <Pressable style={styles.hourInput} onPress={() => {
+            <Pressable disabled={disabled} style={[styles.hourInput, disabled && styles.disabled]} onPress={() => {
                 DateTimePickerAndroid.open({
                     value: timeStringToDate(value),
                     mode: 'time',
@@ -35,6 +36,7 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
             value={timeStringToDate(value)}
             mode="time"
             display='compact'
+            disabled={disabled}
             onChange={(event, selectedDate) => {
                 if (event.type === 'set' && selectedDate) {
                     onChange(selectedDate)
@@ -51,5 +53,8 @@ const styles = StyleSheet.create({
         borderColor: colors.border,
         borderRadius: 4,
         flex: 1,
+    },
+    disabled: {
+        opacity: 0.4,
     }
 });

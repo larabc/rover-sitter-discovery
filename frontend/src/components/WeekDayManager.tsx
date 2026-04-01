@@ -12,10 +12,13 @@ interface WeekDayManagerProps {
     onDeleteSlot: (id: number) => void,
     onUpdateSlot: (slot: AvailabilitySlot, time: string, selectedDate?: Date) => void,
     isAddingSlot: boolean,
-    loadingSlotId: null | number
+    loadingSlotId: null | number,
 }
 
 export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, onUpdateSlot, isAddingSlot, loadingSlotId }: WeekDayManagerProps) {
+
+    const isDayLoading = isAddingSlot || slots?.some(slot => slot.id === loadingSlotId)
+
 
     return (
         <View style={styles.container}>
@@ -27,7 +30,7 @@ export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, on
                     slots && slots.length > 0 ? (
                         <>
                             {slots.map(slot => (
-                                < SlotRow key={slot.id} slot={slot} onDeleteSlot={onDeleteSlot} onAddSlot={onAddSlot} onUpdateSlot={onUpdateSlot} loadingSlotId={loadingSlotId} />
+                                <SlotRow key={slot.id} slot={slot} onDeleteSlot={onDeleteSlot} onAddSlot={onAddSlot} onUpdateSlot={onUpdateSlot} loadingSlotId={loadingSlotId} isDisabled={isDayLoading} />
                             ))}
                             {isAddingSlot && (
                                 <ActivityIndicator size="small" color={colors.accent} />)}
