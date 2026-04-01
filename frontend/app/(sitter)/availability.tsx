@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, ActivityIndicator, ScrollView, useWindowDimensions } from 'react-native'
 import { AvailabilitySlot, DayOfWeek } from '../../src/types/availability'
 import { useRouter } from 'expo-router';
-import { colors, layoutStyles, spacing } from '../../src/constants/theme';
+import { colors, layoutStyles, spacing, textStyles } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
-import CustomButton from "../../src/components/CustomButton"
 import { useAvailability } from '../../src/hooks/useAvailability';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Header from '../../src/components/Header';
+import Loader from '../../src/components/Loader';
 
 export default function Availability() {
-    const router = useRouter();
+
+    const { height } = useWindowDimensions()
 
     const groupSlotsByDay = (slots: AvailabilitySlot[]): Record<number, AvailabilitySlot[]> => {
         return slots.reduce((slotsByDay, slot) => {
@@ -31,15 +33,13 @@ export default function Availability() {
 
 
     return (
-        <View style={layoutStyles.generalContainer}>
-            <CustomButton label="Back" onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />
-            <Text>My availability</Text>
+        <ScrollView style={layoutStyles.generalContainer}>
+            <Header label='My Availability' />
+
             <View style={styles.container}>
                 {
                     isLoading ? (
-                        <View style={layoutStyles.loadingContainer}>
-                            <ActivityIndicator size="large" color={colors.accent} />
-                        </View>
+                        <Loader height={height} />
                     ) :
                         days.map((day) => (
                             <WeekDayManager key={day} day={day} slots={groupSlotsByDay(availabilitySlots)[day]} onAddSlot={() => handleAddSlot(day)} onDeleteSlot={handleDeleteSlot} onUpdateSlot={handleUpdateSlot} isAddingSlot={loadingDay === day} loadingSlotId={loadingSlotId} />
@@ -47,13 +47,13 @@ export default function Availability() {
                 }
 
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: spacing.lg,
+        padding: spacing.md,
         gap: spacing.md,
         flex: 1,
     }

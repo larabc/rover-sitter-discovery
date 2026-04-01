@@ -7,19 +7,17 @@ import { useState } from 'react'
 import { dateToTimeString } from '../../src/utils/timeUtils'
 import DatePicker from '../../src/components/DatePicker'
 import { textStyles, layoutStyles } from '../../src/constants/theme'
+import Header from '../../src/components/Header'
 
 export default function Search() {
     const [date, setDate] = useState(new Date())
     const [startTime, setStartTime] = useState('09:00:00') //TODO: Import this from a commons file
     const [endTime, setEndTime] = useState('18:00:00')
 
-
-
     return (
         <View style={layoutStyles.generalContainer}>
-            <CustomButton label="Back" onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />
+            <Header label='Drop-In Visits' />
             <View style={styles.contentContainer}>
-                <Text style={textStyles.displayHeader}>Drop-In Visits</Text>
                 <Text style={textStyles.paragraph}>When do you need a sitter?</Text>
                 <View style={styles.scheduleForm}>
                     <View>
