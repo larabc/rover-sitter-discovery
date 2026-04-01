@@ -4,9 +4,7 @@ import { AvailabilitySlot, DayOfWeek } from '../../src/types/availability'
 import { useRouter } from 'expo-router';
 import { colors, layoutStyles, spacing } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
-import BASE_URL from '../../src/api/client';
 import CustomButton from "../../src/components/CustomButton"
-import { hoursToTimeString } from '../../src/utils/timeUtils';
 import { useAvailability } from '../../src/hooks/useAvailability';
 
 export default function Availability() {
