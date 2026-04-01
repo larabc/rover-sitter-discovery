@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import { AvailabilitySlot, DayOfWeek } from '../../src/types/availability'
 import { useRouter } from 'expo-router';
-import { spacing } from '../../src/constants/theme';
+import { colors, layoutStyles, spacing } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
 import BASE_URL from '../../src/api/client';
 import CustomButton from "../../src/components/CustomButton"
@@ -12,6 +12,7 @@ export default function Availability() {
     const router = useRouter();
 
     const [availabilitySlots, setAvailabilitySlots] = useState<AvailabilitySlot[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
     const groupSlotsByDay = (slots: AvailabilitySlot[]): Record<number, AvailabilitySlot[]> => {
         return slots.reduce((slotsByDay, slot) => {
@@ -23,9 +24,6 @@ export default function Availability() {
 
     const days = Object.values(DayOfWeek).filter(v => typeof v === 'number')
 
-
-
-    //add loading state
     useEffect(() => {
         async function fetchSlots() {
             try {
@@ -33,8 +31,10 @@ export default function Availability() {
                 if (response.ok) {
                     const availability_slots = await response.json()
                     setAvailabilitySlots(availability_slots)
+                    setIsLoading(false)
                 }
             } catch (error) {
+                setIsLoading(false)
                 console.error(error)
             }
         }
@@ -58,6 +58,7 @@ export default function Availability() {
     }
 
     const handleAddSlot = async (day: number) => {
+        setIsLoading(true)
         const { start_time, end_time } = getDefaultSlotTimes(day)
 
         const response = await fetch(`${BASE_URL}/slots/`, {
@@ -67,18 +68,23 @@ export default function Availability() {
         })
         const newSlot = await response.json()
         setAvailabilitySlots([...availabilitySlots, newSlot])
+        setIsLoading(false)
     }
 
     const handleDeleteSlot = async (id: number) => {
+        setIsLoading(true)
+
         const response = await fetch(`${BASE_URL}/slots/${id}/`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
         })
 
         setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
+        setIsLoading(false)
     }
 
     const handleUpdateSlot = async (slot: AvailabilitySlot, time: string, selectedTime?: Date) => {
+        setIsLoading(true)
 
         let start_time = slot.start_time;
         let end_time = slot.end_time;
@@ -101,19 +107,24 @@ export default function Availability() {
         const updatedSlot = await response.json()
 
         setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
+        setIsLoading(false)
     }
 
 
     return (
-        <View>
+        <View style={layoutStyles.generalContainer}>
             <CustomButton label="Back" onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />
             <Text>My availability</Text>
             <View style={styles.container}>
-
                 {
-                    days.map((day) => (
-                        <WeekDayManager key={day} day={day} slots={groupSlotsByDay(availabilitySlots)[day]} onAddSlot={() => handleAddSlot(day)} onDeleteSlot={handleDeleteSlot} onUpdateSlot={handleUpdateSlot} />
-                    ))
+                    isLoading ? (
+                        <View style={layoutStyles.loadingContainer}>
+                            <ActivityIndicator size="large" color={colors.accent} />
+                        </View>
+                    ) :
+                        days.map((day) => (
+                            <WeekDayManager key={day} day={day} slots={groupSlotsByDay(availabilitySlots)[day]} onAddSlot={() => handleAddSlot(day)} onDeleteSlot={handleDeleteSlot} onUpdateSlot={handleUpdateSlot} />
+                        ))
                 }
 
             </View>
@@ -125,5 +136,6 @@ const styles = StyleSheet.create({
     container: {
         padding: spacing.lg,
         gap: spacing.md,
+        flex: 1,
     }
 });
