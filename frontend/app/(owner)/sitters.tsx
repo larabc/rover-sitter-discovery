@@ -2,10 +2,10 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router'
 import BASE_URL from '../../src/api/client'
-import { Sitter } from '../../src/types/Sitter'
 import CustomButton from '../../src/components/CustomButton'
 import { colors, layoutStyles, textStyles } from '../../src/constants/theme'
 import SitterCard from '../../src/components/SitterCard'
+import { Sitter } from '../../src/types/sitter'
 
 export default function Sitters() {
     const { date, start_time, end_time } = useLocalSearchParams()

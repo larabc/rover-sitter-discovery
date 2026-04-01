@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { colors, spacing, textStyles } from '../constants/theme'
-import { Sitter } from '../types/Sitter'
+import { Sitter } from '../types/sitter'
+
 
 interface SitterCardProps {
     sitter: Sitter
