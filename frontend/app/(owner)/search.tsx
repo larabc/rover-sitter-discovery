@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: spacing.md,
-        flex: 1,
 
     },
     separator: {

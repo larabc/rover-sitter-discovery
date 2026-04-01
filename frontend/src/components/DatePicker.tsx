@@ -25,7 +25,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
                     }
                 })
             }}>
-                <Text>{dateToTimeString(value)}</Text>
+                <Text>{value.toDateString()}</Text>
             </Pressable>
         )
     }
@@ -46,10 +46,9 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
 
 const styles = StyleSheet.create({
     hourInput: {
-        padding: spacing.md,
         borderWidth: 2,
         borderColor: colors.border,
         borderRadius: 4,
-        flex: 1,
+        padding: spacing.md,
     }
 });
