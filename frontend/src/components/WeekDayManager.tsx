@@ -27,9 +27,9 @@ export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, on
             </Text>
             <View style={styles.container}>
                 {
-                    slots && slots.length > 0 ? (
+                    slots && slots.length > 0 || isAddingSlot ? (
                         <>
-                            {slots.map(slot => (
+                            {slots?.map(slot => (
                                 <SlotRow key={slot.id} slot={slot} onDeleteSlot={onDeleteSlot} onAddSlot={onAddSlot} onUpdateSlot={onUpdateSlot} loadingSlotId={loadingSlotId} isDisabled={isDayLoading} />
                             ))}
                             {isAddingSlot && (
