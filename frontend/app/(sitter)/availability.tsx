@@ -1,10 +1,11 @@
-import { View, StyleSheet, ScrollView, useWindowDimensions } from 'react-native'
+import { View, StyleSheet, ScrollView, useWindowDimensions, Text } from 'react-native'
 import { AvailabilitySlot, DayOfWeek } from '../../src/types/availability'
 import { layoutStyles, spacing } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
 import { useAvailability } from '../../src/hooks/useAvailability';
 import Header from '../../src/components/Header';
 import Loader from '../../src/components/Loader';
+import { Frown } from 'lucide-react-native';
 
 export default function Availability() {
 
@@ -27,7 +28,8 @@ export default function Availability() {
         loadingDay,
         handleAddSlot,
         handleDeleteSlot,
-        handleUpdateSlot, } = useAvailability()
+        handleUpdateSlot,
+        error } = useAvailability()
 
 
     return (
@@ -35,7 +37,13 @@ export default function Availability() {
             <Header label='My Availability' />
 
             <View style={styles.container}>
-                {
+                {error ? (
+                    <View style={styles.errorContainer}>
+                        <Frown />
+                        <Text>{error}</Text>
+                    </View>
+
+                ) :
                     isLoading ? (
                         <Loader height={height} />
                     ) :
@@ -54,5 +62,11 @@ const styles = StyleSheet.create({
         padding: spacing.md,
         gap: spacing.md,
         flex: 1,
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: spacing.md
     }
 });

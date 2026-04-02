@@ -3,11 +3,15 @@ import { hoursToTimeString } from "../utils/timeUtils"
 import BASE_URL from "../api/client"
 import { AvailabilitySlot } from "../types/availability"
 
+
+//TODO Manage errors 
+
 export function useAvailability() {
     const [availabilitySlots, setAvailabilitySlots] = useState<AvailabilitySlot[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadingDay, setLoadingDay] = useState<null | number>(null)
     const [loadingSlotId, setLoadingSlotId] = useState<null | number>(null)
+    const [error, setError] = useState<null | string>(null)
 
     const getDefaultSlotTimes = (day: number): { start_time: string, end_time: string } => {
         const slotsForDay = availabilitySlots.filter(slot => slot.day_of_week === day)
@@ -26,29 +30,54 @@ export function useAvailability() {
     }
 
     const handleAddSlot = async (day: number) => {
-        setLoadingDay(day)
-        const { start_time, end_time } = getDefaultSlotTimes(day)
+        try {
+            setLoadingDay(day)
+            const { start_time, end_time } = getDefaultSlotTimes(day)
 
-        const response = await fetch(`${BASE_URL}/slots/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ start_time, end_time, day_of_week: day, sitter: 1 }) //set sitter 1 hardcoded
-        })
-        const newSlot = await response.json()
-        setAvailabilitySlots([...availabilitySlots, newSlot])
-        setLoadingDay(null)
+            const response = await fetch(`${BASE_URL}/slots/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ start_time, end_time, day_of_week: day, sitter: 1 }) //set sitter 1 hardcoded
+            })
+
+            if (response.ok) {
+                const newSlot = await response.json()
+                setAvailabilitySlots([...availabilitySlots, newSlot])
+                setLoadingDay(null)
+            } else {
+                setLoadingDay(null)
+                setError('Slot unavailable to add.')
+
+            }
+
+        }
+        catch (error) {
+            setLoadingDay(null)
+            setError('Connection lost. Try again later.')
+        }
+
     }
 
     const handleDeleteSlot = async (id: number) => {
         setLoadingSlotId(id)
+        try {
+            const response = await fetch(`${BASE_URL}/slots/${id}/`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
 
-        const response = await fetch(`${BASE_URL}/slots/${id}/`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
-        })
-
-        setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
-        setLoadingSlotId(null)
+            if (response.ok) {
+                setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
+                setLoadingSlotId(null)
+            } else {
+                setLoadingSlotId(null)
+                setError('Slot unavailable to delete.')
+            }
+        }
+        catch (error) {
+            setLoadingSlotId(null)
+            setError('Connection lost. Try again later.')
+        }
 
     }
 
@@ -67,17 +96,28 @@ export function useAvailability() {
             end_time = hoursToTimeString(selectedTime.getHours())
         }
 
+        try {
+            const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: 1 }) //hardcoded sitter id: 1
+            })
 
-        const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: 1 }) //hardcoded sitter id: 1
-        })
+            if (response.ok) {
+                const updatedSlot = await response.json()
 
-        const updatedSlot = await response.json()
+                setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
+                setLoadingSlotId(null)
+            } else {
+                setLoadingSlotId(null)
+                setError('Slot unavailable to update.')
+            }
+        }
+        catch (error) {
+            setLoadingSlotId(null)
+            setError('Connection lost. Try again later.')
+        }
 
-        setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
-        setLoadingSlotId(null)
     }
     useEffect(() => {
         async function fetchSlots() {
@@ -87,10 +127,13 @@ export function useAvailability() {
                     const availability_slots = await response.json()
                     setAvailabilitySlots(availability_slots)
                     setIsLoading(false)
+                } else {
+                    setIsLoading(false)
+                    setError('Unable to load availability. Try again later.')
                 }
             } catch (error) {
                 setIsLoading(false)
-                console.error(error)
+                setError('Connection lost. Try again later.')
             }
         }
         fetchSlots()
@@ -99,6 +142,7 @@ export function useAvailability() {
     return {
         availabilitySlots,
         isLoading,
+        error,
         loadingSlotId,
         loadingDay,
         handleAddSlot,
