@@ -43,6 +43,13 @@ export const layoutStyles = {
         flex: 1,
     },
 
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: spacing.md
+    } as const,
+
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',

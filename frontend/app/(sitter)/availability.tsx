@@ -38,7 +38,7 @@ export default function Availability() {
 
             <View style={styles.container}>
                 {error ? (
-                    <View style={styles.errorContainer}>
+                    <View style={layoutStyles.errorContainer}>
                         <Frown />
                         <Text>{error}</Text>
                     </View>
@@ -62,11 +62,5 @@ const styles = StyleSheet.create({
         padding: spacing.md,
         gap: spacing.md,
         flex: 1,
-    },
-    errorContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: spacing.md
     }
 });
