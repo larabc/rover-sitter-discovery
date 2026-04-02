@@ -18,7 +18,7 @@ export default function Search() {
     return (
         <View style={layoutStyles.generalContainer}>
             <Header label='Drop-In Visits' />
-            <View style={styles.contentContainer}>
+            <View style={layoutStyles.contentContainer}>
                 <Text style={textStyles.paragraph}>When do you need a sitter?</Text>
                 <View style={styles.scheduleForm}>
                     <View>
@@ -28,12 +28,12 @@ export default function Search() {
                     </View>
                     <View>
                         <Text style={textStyles.sectionHeader}>Times</Text>
-                        <View style={styles.slotContainer}>
+                        <View style={layoutStyles.slotContainer}>
                             <TimePicker
                                 value={startTime}
                                 onChange={(selectedDate) => setStartTime(toTimeString(selectedDate))}
                             />
-                            <Text style={styles.separator}>-</Text>
+                            <Text style={layoutStyles.separator}>-</Text>
                             <TimePicker
                                 value={endTime}
                                 onChange={(selectedDate) => setEndTime(toTimeString(selectedDate))}
@@ -50,24 +50,12 @@ export default function Search() {
 
 //TODO: Extract repeated styles 
 const styles = StyleSheet.create({
-    contentContainer: {
-        flex: 1,
-        justifyContent: 'space-between',
-    },
+
     scheduleForm: {
         padding: spacing.md,
         flex: 1,
         gap: spacing.lg,
 
     },
-    slotContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: spacing.md,
 
-    },
-    separator: {
-        fontSize: 20,
-        color: colors.border,
-    },
 })

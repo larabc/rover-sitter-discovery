@@ -5,8 +5,6 @@ import { AvailabilitySlot } from "../types/availability"
 import { DEFAULT_END_TIME, DEFAULT_START_TIME, DEFAULT_SITTER_ID } from "../constants/defaults"
 
 
-//TODO Manage errors 
-
 export function useAvailability() {
     const [availabilitySlots, setAvailabilitySlots] = useState<AvailabilitySlot[]>([])
     const [isLoading, setIsLoading] = useState(true)
