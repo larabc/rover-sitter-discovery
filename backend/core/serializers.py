@@ -8,7 +8,6 @@ class SitterSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate_email(self, value):
-        print(f"validate_email called with: {value}")
 
         if Sitter.objects.filter(email=value).exists():
             raise serializers.ValidationError("email already exists")
