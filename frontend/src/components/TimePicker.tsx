@@ -2,19 +2,20 @@
 import React from 'react'
 import { timeStringToDate } from '../utils/timeUtils'
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
-import { Platform, Pressable, Text, StyleSheet } from 'react-native'
+import { Platform, Pressable, Text, StyleSheet, View } from 'react-native'
 import { colors, spacing } from '../constants/theme'
 
 
 interface TimePickerProps {
     value: string,
     onChange: (selectedDate: Date) => void,
+    disabled?: boolean
 }
 
-export default function TimePicker({ value, onChange }: TimePickerProps) {
+export default function TimePicker({ value, onChange, disabled }: TimePickerProps) {
     if (Platform.OS === 'android') {
         return (
-            <Pressable style={styles.hourInput} onPress={() => {
+            <Pressable disabled={disabled} style={[styles.hourInput, disabled && styles.disabled]} onPress={() => {
                 DateTimePickerAndroid.open({
                     value: timeStringToDate(value),
                     mode: 'time',
@@ -31,16 +32,19 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
     }
 
     return (
-        <DateTimePicker
-            value={timeStringToDate(value)}
-            mode="time"
-            display='compact'
-            onChange={(event, selectedDate) => {
-                if (event.type === 'set' && selectedDate) {
-                    onChange(selectedDate)
-                }
-            }}
-        />
+        <View style={disabled && { opacity: 0.4 }}>
+            <DateTimePicker
+                value={timeStringToDate(value)}
+                mode="time"
+                display='compact'
+                disabled={disabled}
+                onChange={(event, selectedDate) => {
+                    if (event.type === 'set' && selectedDate) {
+                        onChange(selectedDate)
+                    }
+                }}
+            />
+        </View>
     )
 }
 
@@ -51,5 +55,8 @@ const styles = StyleSheet.create({
         borderColor: colors.border,
         borderRadius: 4,
         flex: 1,
+    },
+    disabled: {
+        opacity: 0.4,
     }
 });

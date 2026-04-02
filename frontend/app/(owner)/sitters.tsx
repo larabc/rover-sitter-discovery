@@ -11,12 +11,11 @@ export default function Sitters() {
     const { date, start_time, end_time } = useLocalSearchParams()
 
     const [sitters, setSitters] = useState<Sitter[]>([])
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         async function fetchSitters() {
             try {
-                setIsLoading(true)
                 const response = await fetch(`${BASE_URL}/sitters/search/?date=${date}&start_time=${start_time}&end_time=${end_time}`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
@@ -24,7 +23,6 @@ export default function Sitters() {
                 if (response.ok) {
                     const availability_sitters = await response.json()
                     setSitters(availability_sitters)
-                    console.log(availability_sitters)
                     setIsLoading(false)
                 }
             } catch (error) {
@@ -42,7 +40,7 @@ export default function Sitters() {
             <CustomButton label="Back" onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />
             <View style={styles.contentContainer}>
                 {isLoading ? (
-                    <View style={styles.loadingContainer}>
+                    <View style={layoutStyles.loadingContainer}>
                         <ActivityIndicator size="large" color={colors.accent} />
                     </View>
                 ) :
@@ -64,9 +62,4 @@ const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
     },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
 });
