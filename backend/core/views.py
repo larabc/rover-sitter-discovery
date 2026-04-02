@@ -45,7 +45,7 @@ class SitterSearchView(APIView):
         try:
             weekday_from_date = datetime.date.fromisoformat(date_str).weekday()
 
-        except:
+        except ValueError:
             return Response(
                 {"error": "invalid date format"},
                 status=status.HTTP_400_BAD_REQUEST,
