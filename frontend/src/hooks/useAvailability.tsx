@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { toTimeString } from "../utils/timeUtils"
 import BASE_URL from "../api/client"
 import { AvailabilitySlot } from "../types/availability"
+import { DEFAULT_END_TIME, DEFAULT_START_TIME } from "../constants/defaults"
 
 
 //TODO Manage errors 
@@ -16,8 +17,8 @@ export function useAvailability() {
     const getDefaultSlotTimes = (day: number): { start_time: string, end_time: string } => {
         const slotsForDay = availabilitySlots.filter(slot => slot.day_of_week === day)
         const lastSlot = slotsForDay[slotsForDay.length - 1]
-        let start_time: string = '09:00:00'
-        let end_time: string = '18:00:00'
+        let start_time: string = DEFAULT_START_TIME
+        let end_time: string = DEFAULT_END_TIME
         if (lastSlot) {
             const start = Math.min(parseInt(lastSlot.end_time.split(':')[0])
                 + 2, 22)

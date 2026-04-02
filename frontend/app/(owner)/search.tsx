@@ -8,11 +8,12 @@ import { toTimeString } from '../../src/utils/timeUtils'
 import DatePicker from '../../src/components/DatePicker'
 import { textStyles, layoutStyles } from '../../src/constants/theme'
 import Header from '../../src/components/Header'
+import { DEFAULT_END_TIME, DEFAULT_START_TIME } from '../../src/constants/defaults'
 
 export default function Search() {
     const [date, setDate] = useState(new Date())
-    const [startTime, setStartTime] = useState('09:00:00') //TODO: Import this from a commons file
-    const [endTime, setEndTime] = useState('18:00:00')
+    const [startTime, setStartTime] = useState(DEFAULT_START_TIME)
+    const [endTime, setEndTime] = useState(DEFAULT_END_TIME)
 
     return (
         <View style={layoutStyles.generalContainer}>
