@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
-import { hoursToTimeString } from "../utils/timeUtils"
+import { toTimeString } from "../utils/timeUtils"
 import BASE_URL from "../api/client"
 import { AvailabilitySlot } from "../types/availability"
+import { DEFAULT_END_TIME, DEFAULT_START_TIME, DEFAULT_SITTER_ID } from "../constants/defaults"
 
-
-//TODO Manage errors 
 
 export function useAvailability() {
     const [availabilitySlots, setAvailabilitySlots] = useState<AvailabilitySlot[]>([])
@@ -16,14 +15,14 @@ export function useAvailability() {
     const getDefaultSlotTimes = (day: number): { start_time: string, end_time: string } => {
         const slotsForDay = availabilitySlots.filter(slot => slot.day_of_week === day)
         const lastSlot = slotsForDay[slotsForDay.length - 1]
-        let start_time: string = '09:00:00'
-        let end_time: string = '18:00:00'
+        let start_time: string = DEFAULT_START_TIME
+        let end_time: string = DEFAULT_END_TIME
         if (lastSlot) {
             const start = Math.min(parseInt(lastSlot.end_time.split(':')[0])
                 + 2, 22)
             const end = Math.min(start + 4, 23)
-            start_time = hoursToTimeString(start)
-            end_time = hoursToTimeString(end)
+            start_time = toTimeString(start)
+            end_time = toTimeString(end)
         }
 
         return { start_time, end_time }
@@ -37,7 +36,7 @@ export function useAvailability() {
             const response = await fetch(`${BASE_URL}/slots/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ start_time, end_time, day_of_week: day, sitter: 1 }) //set sitter 1 hardcoded
+                body: JSON.stringify({ start_time, end_time, day_of_week: day, sitter: DEFAULT_SITTER_ID }) //set sitter 1 hardcoded
             })
 
             if (response.ok) {
@@ -89,18 +88,18 @@ export function useAvailability() {
         let end_time = slot.end_time;
 
         if (time === 'start_time' && selectedTime) {
-            start_time = hoursToTimeString(selectedTime.getHours())
+            start_time = toTimeString(selectedTime.getHours())
         }
 
         if (time === 'end_time' && selectedTime) {
-            end_time = hoursToTimeString(selectedTime.getHours())
+            end_time = toTimeString(selectedTime.getHours())
         }
 
         try {
             const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: 1 }) //hardcoded sitter id: 1
+                body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: DEFAULT_SITTER_ID })
             })
 
             if (response.ok) {
@@ -122,7 +121,7 @@ export function useAvailability() {
     useEffect(() => {
         async function fetchSlots() {
             try {
-                const response = await fetch(BASE_URL + '/slots/?id=1')
+                const response = await fetch(BASE_URL + `/slots/?id=${DEFAULT_SITTER_ID}`)
                 if (response.ok) {
                     const availability_slots = await response.json()
                     setAvailabilitySlots(availability_slots)

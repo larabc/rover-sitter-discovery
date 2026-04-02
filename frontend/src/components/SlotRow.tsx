@@ -21,14 +21,14 @@ export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, l
 }: SlotRowProps) {
 
     return (
-        <View style={styles.container}>
-            <View style={styles.slotContainer}>
+        <View style={layoutStyles.slotContainer}>
+            <View style={layoutStyles.slotContainer}>
                 <TimePicker
                     value={slot.start_time}
                     onChange={(selectedDate) => onUpdateSlot(slot, 'start_time', selectedDate)}
                     disabled={isDisabled}
                 />
-                <Text style={styles.separator}>-</Text>
+                <Text style={layoutStyles.separator}>-</Text>
                 <TimePicker
                     value={slot.end_time}
                     onChange={(selectedDate) => onUpdateSlot(slot, 'end_time', selectedDate)}
@@ -56,26 +56,10 @@ export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, l
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        //justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: spacing.sm
-    },
-    slotContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: spacing.md,
-        flex: 1,
-
-    },
     btnsContainer: {
         gap: spacing.sm,
         flexDirection: 'row',
     },
-    separator: {
-        fontSize: 20,
-        color: colors.border,
-    }
+
 
 });

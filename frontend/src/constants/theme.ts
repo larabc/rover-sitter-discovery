@@ -42,7 +42,10 @@ export const layoutStyles = {
         padding: spacing.lg,
         flex: 1,
     },
-
+    contentContainer: {
+        flex: 1,
+        justifyContent: 'space-between',
+    } as const,
     errorContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -54,5 +57,17 @@ export const layoutStyles = {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    } as const,
+
+    slotContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.md,
+
+    } as const,
+
+    separator: {
+        fontSize: 20,
+        color: colors.border,
     } as const,
 }
