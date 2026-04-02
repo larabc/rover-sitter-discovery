@@ -37,7 +37,19 @@ class SitterSearchView(APIView):
         start_time_str = request.query_params.get("start_time")
         end_time_str = request.query_params.get("end_time")
 
-        weekday_from_date = datetime.date.fromisoformat(date_str).weekday()
+        if not date_str or not start_time_str or not end_time_str:
+            return Response(
+                {"error": "date, start_time and end_time are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            weekday_from_date = datetime.date.fromisoformat(date_str).weekday()
+
+        except:
+            return Response(
+                {"error": "invalid date format"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         slots = AvailableSlot.objects.filter(
             day_of_week=weekday_from_date,

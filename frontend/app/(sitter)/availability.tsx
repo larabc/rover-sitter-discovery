@@ -1,10 +1,8 @@
-import { View, StyleSheet, ActivityIndicator, ScrollView, useWindowDimensions } from 'react-native'
+import { View, StyleSheet, ScrollView, useWindowDimensions } from 'react-native'
 import { AvailabilitySlot, DayOfWeek } from '../../src/types/availability'
-import { useRouter } from 'expo-router';
-import { colors, layoutStyles, spacing, textStyles } from '../../src/constants/theme';
+import { layoutStyles, spacing } from '../../src/constants/theme';
 import WeekDayManager from '../../src/components/WeekDayManager';
 import { useAvailability } from '../../src/hooks/useAvailability';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../../src/components/Header';
 import Loader from '../../src/components/Loader';
 
