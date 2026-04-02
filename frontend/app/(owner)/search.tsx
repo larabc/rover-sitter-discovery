@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet } from 'react-native'
 import CustomButton from '../../src/components/CustomButton'
 import { router } from 'expo-router'
-import { colors, spacing, textSizes } from '../../src/constants/theme'
+import { colors, spacing } from '../../src/constants/theme'
 import TimePicker from '../../src/components/TimePicker'
 import { useState } from 'react'
-import { dateToTimeString } from '../../src/utils/timeUtils'
+import { toTimeString } from '../../src/utils/timeUtils'
 import DatePicker from '../../src/components/DatePicker'
 import { textStyles, layoutStyles } from '../../src/constants/theme'
 import Header from '../../src/components/Header'
@@ -30,12 +30,12 @@ export default function Search() {
                         <View style={styles.slotContainer}>
                             <TimePicker
                                 value={startTime}
-                                onChange={(selectedDate) => setStartTime(dateToTimeString(selectedDate))}
+                                onChange={(selectedDate) => setStartTime(toTimeString(selectedDate))}
                             />
                             <Text style={styles.separator}>-</Text>
                             <TimePicker
                                 value={endTime}
-                                onChange={(selectedDate) => setEndTime(dateToTimeString(selectedDate))}
+                                onChange={(selectedDate) => setEndTime(toTimeString(selectedDate))}
                             />
                         </View>
                     </View>

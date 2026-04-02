@@ -1,6 +1,5 @@
 
 import React from 'react'
-import { dateToTimeString } from '../utils/timeUtils'
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import { Platform, Pressable, Text, StyleSheet } from 'react-native'
 import { colors, spacing } from '../constants/theme'
