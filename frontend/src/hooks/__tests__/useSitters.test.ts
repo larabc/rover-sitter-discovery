@@ -26,6 +26,8 @@ describe('useSitters', () => {
         })
         const { result } = renderHook(() => useSitters())
 
+        expect(result.current.isLoading).toBe(true)
+
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false)
         })
@@ -43,6 +45,8 @@ describe('useSitters', () => {
 
         const { result } = renderHook(() => useSitters())
 
+        expect(result.current.isLoading).toBe(true)
+
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false)
         })
@@ -54,6 +58,8 @@ describe('useSitters', () => {
         global.fetch = jest.fn().mockRejectedValue(new Error('Network error'))
 
         const { result } = renderHook(() => useSitters())
+
+        expect(result.current.isLoading).toBe(true)
 
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false)

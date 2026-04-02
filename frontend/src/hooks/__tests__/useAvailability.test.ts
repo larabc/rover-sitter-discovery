@@ -3,6 +3,10 @@ import { useAvailability } from '../useAvailability'
 
 describe('useAvailability', () => {
     test('initial state has empty slots, isLoading true and no error', () => {
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            json: async () => []
+        })
         const { result } = renderHook(() => useAvailability())
 
         expect(result.current.availabilitySlots).toEqual([])
@@ -16,6 +20,8 @@ describe('useAvailability', () => {
             json: async () => [{ id: 1, day_of_week: 0, start_time: '09:00:00', end_time: '18:00:00', sitter: 1 }]
         })
         const { result } = renderHook(() => useAvailability())
+
+        expect(result.current.isLoading).toBe(true)
 
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false)
@@ -34,6 +40,8 @@ describe('useAvailability', () => {
 
         const { result } = renderHook(() => useAvailability())
 
+        expect(result.current.isLoading).toBe(true)
+
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false)
         })
@@ -45,6 +53,8 @@ describe('useAvailability', () => {
         global.fetch = jest.fn().mockRejectedValue(new Error('Network error'))
 
         const { result } = renderHook(() => useAvailability())
+
+        expect(result.current.isLoading).toBe(true)
 
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false)
