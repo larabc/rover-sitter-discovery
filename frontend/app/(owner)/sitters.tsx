@@ -1,45 +1,23 @@
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { router, useLocalSearchParams } from 'expo-router'
-import BASE_URL from '../../src/api/client'
-import CustomButton from '../../src/components/CustomButton'
 import { colors, layoutStyles, textStyles } from '../../src/constants/theme'
 import SitterCard from '../../src/components/SitterCard'
-import { Sitter } from '../../src/types/sitter'
+import { useSitters } from '../../src/hooks/useSitters'
+import Header from '../../src/components/Header'
+import { Frown } from 'lucide-react-native'
 
 export default function Sitters() {
-    const { date, start_time, end_time } = useLocalSearchParams()
-
-    const [sitters, setSitters] = useState<Sitter[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-
-    useEffect(() => {
-        async function fetchSitters() {
-            try {
-                const response = await fetch(`${BASE_URL}/sitters/search/?date=${date}&start_time=${start_time}&end_time=${end_time}`, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                })
-                if (response.ok) {
-                    const availability_sitters = await response.json()
-                    setSitters(availability_sitters)
-                    setIsLoading(false)
-                }
-            } catch (error) {
-                setIsLoading(false)
-                //TODO: define error 
-                console.error(error)
-            }
-        }
-        fetchSitters()
-    }, [])
-
+    const { sitters, isLoading, error } = useSitters()
     return (
         <View style={layoutStyles.generalContainer}>
-            {/* TODO: Extract back button */}
-            <CustomButton label="Back" onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />
+            <Header label='Sitters' />
             <View style={styles.contentContainer}>
-                {isLoading ? (
+                {error ? (
+                    <View style={layoutStyles.errorContainer}>
+                        <Frown />
+                        <Text>{error}</Text>
+                    </View>
+
+                ) : isLoading ? (
                     <View style={layoutStyles.loadingContainer}>
                         <ActivityIndicator size="large" color={colors.accent} />
                     </View>
