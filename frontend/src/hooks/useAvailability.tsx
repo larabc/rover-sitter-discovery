@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { toTimeString } from "../utils/timeUtils"
 import BASE_URL from "../api/client"
 import { AvailabilitySlot } from "../types/availability"
-import { DEFAULT_END_TIME, DEFAULT_START_TIME } from "../constants/defaults"
+import { DEFAULT_END_TIME, DEFAULT_START_TIME, DEFAULT_SITTER_ID } from "../constants/defaults"
 
 
 //TODO Manage errors 
@@ -38,7 +38,7 @@ export function useAvailability() {
             const response = await fetch(`${BASE_URL}/slots/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ start_time, end_time, day_of_week: day, sitter: 1 }) //set sitter 1 hardcoded
+                body: JSON.stringify({ start_time, end_time, day_of_week: day, sitter: DEFAULT_SITTER_ID }) //set sitter 1 hardcoded
             })
 
             if (response.ok) {
@@ -101,7 +101,7 @@ export function useAvailability() {
             const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: 1 }) //hardcoded sitter id: 1
+                body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: DEFAULT_SITTER_ID })
             })
 
             if (response.ok) {
@@ -123,7 +123,7 @@ export function useAvailability() {
     useEffect(() => {
         async function fetchSlots() {
             try {
-                const response = await fetch(BASE_URL + '/slots/?id=1')
+                const response = await fetch(BASE_URL + `/slots/?id=${DEFAULT_SITTER_ID}`)
                 if (response.ok) {
                     const availability_slots = await response.json()
                     setAvailabilitySlots(availability_slots)
