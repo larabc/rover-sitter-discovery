@@ -114,3 +114,115 @@ class AvailableSlotViewTests(APITestCase):
         )
         self.assertEqual(response.status_code, 404)
         self.assertEqual(AvailableSlot.objects.count(), 1)
+
+
+class SitterViewSet(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.sitter = Sitter.objects.create(
+            name="Test Sitter",
+            email="test@test.com",
+            bio="Test bio",
+            price_per_night=50.00,
+            location="Barcelona",
+        )
+
+    def test_create_sitter_returns_201(self):
+        response = self.client.post(
+            "/api/sitters/",
+            {
+                "name": "Otro Sitter",
+                "email": "test1@test.com",
+                "bio": "",
+                "price_per_night": 30,
+                "location": "Madrid",
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_create_sitter_with_duplicate_email_returns_400(self):
+        response = self.client.post(
+            "/api/sitters/",
+            {
+                "name": "Otro Sitter",
+                "email": "test@test.com",
+                "bio": "",
+                "price_per_night": 30,
+                "location": "Madrid",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+
+class SitterSearchView(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.sitter = Sitter.objects.create(
+            name="Test Sitter",
+            email="test@test.com",
+            bio="Test bio",
+            price_per_night=50.00,
+            location="Barcelona",
+        )
+        self.slot = AvailableSlot.objects.create(
+            sitter=self.sitter,
+            day_of_week=0,
+            start_time="09:00:00",
+            end_time="18:00:00",
+        )
+
+        self.monday_date = "2026-03-30"
+
+    def test_search_returns_available_sitters(self):
+        response = self.client.get(
+            f"/api/sitters/search/?date={self.monday_date}&start_time=09:00:00&end_time=18:00:00"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+    def test_search_returns_empty_list_when_no_sitters_available(self):
+        response = self.client.get(
+            f"/api/sitters/search/?date={self.monday_date}&start_time=06:00:00&end_time=08:00:00"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
+
+    def test_search_without_date_returns_error(self):
+        response = self.client.get(
+            f"/api/sitters/search/?start_time=09:00:00&end_time=18:00:00"
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data, {"error": "date, start_time and end_time are required"}
+        )
+
+    def test_search_without_start_time_returns_error(self):
+        response = self.client.get(
+            f"/api/sitters/search/?date={self.monday_date}&end_time=18:00:00"
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data, {"error": "date, start_time and end_time are required"}
+        )
+
+    def test_search_without_end_time_returns_error(self):
+        response = self.client.get(
+            f"/api/sitters/search/?date={self.monday_date}&start_time=09:00:00"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data, {"error": "date, start_time and end_time are required"}
+        )
+
+    def test_search_with_invalid_date_returns_error(self):
+        response = self.client.get(
+            f"/api/sitters/search/?date='notadate'&start_time=09:00:00&end_time=18:00:00"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {"error": "invalid date format"})
