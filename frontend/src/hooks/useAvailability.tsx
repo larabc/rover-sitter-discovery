@@ -3,6 +3,7 @@ import { toTimeString } from "../utils/timeUtils"
 import BASE_URL from "../api/client"
 import { AvailabilitySlot } from "../types/availability"
 import { DEFAULT_END_TIME, DEFAULT_START_TIME, DEFAULT_SITTER_ID } from "../constants/defaults"
+import Toast from 'react-native-toast-message';
 
 
 export function useAvailability() {
@@ -46,9 +47,9 @@ export function useAvailability() {
                 setAvailabilitySlots([...availabilitySlots, newSlot])
                 setLoadingDay(null)
             } else {
-                setLoadingSlotId(null)
+                setLoadingDay(null)
                 const errorData = await response.json()
-                setError(errorData.non_field_errors?.[0] || 'Slot unavailable to add.')
+                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to add.' })
             }
 
         }
@@ -71,7 +72,9 @@ export function useAvailability() {
                 setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
                 setLoadingSlotId(null)
             } else {
-                setError('Slot unavailable to delete.')
+                setLoadingSlotId(null)
+                const errorData = await response.json()
+                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to delete.' })
             }
         }
         catch (error) {
@@ -83,9 +86,6 @@ export function useAvailability() {
 
     const handleUpdateSlot = async (slot: AvailabilitySlot, time: string, selectedTime?: Date) => {
         setError(null)
-
-        setLoadingSlotId(slot.id)
-
 
         let start_time = slot.start_time;
         let end_time = slot.end_time;
@@ -99,6 +99,8 @@ export function useAvailability() {
         }
 
         if (start_time < end_time) {
+            setLoadingSlotId(slot.id)
+
             try {
                 const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
                     method: 'PUT',
@@ -114,7 +116,7 @@ export function useAvailability() {
                 } else {
                     setLoadingSlotId(null)
                     const errorData = await response.json()
-                    setError(errorData.non_field_errors?.[0] || 'Slot unavailable to update.')
+                    Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to update.' })
                 }
             }
             catch (error) {
@@ -123,7 +125,7 @@ export function useAvailability() {
             }
         } else {
             setLoadingSlotId(null)
-            setError('Invalidate times selected')
+            Toast.show({ type: 'error', text1: 'Start time must be before end time' })
         }
 
     }
