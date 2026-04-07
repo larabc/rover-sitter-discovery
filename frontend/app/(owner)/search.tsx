@@ -14,41 +14,53 @@ export default function Search() {
     const [date, setDate] = useState(new Date())
     const [startTime, setStartTime] = useState(DEFAULT_START_TIME)
     const [endTime, setEndTime] = useState(DEFAULT_END_TIME)
+    const isValidSearch = startTime < endTime
+
+    const handleSearch = () => {
+        router.push({ pathname: '/(owner)/sitters', params: { date: date.toISOString().split('T')[0], start_time: startTime, end_time: endTime } })
+    }
 
     return (
         <View style={layoutStyles.generalContainer}>
             <Header label='Drop-In Visits' />
             <View style={layoutStyles.contentContainer}>
-                <Text style={textStyles.paragraph}>When do you need a sitter?</Text>
                 <View style={styles.scheduleForm}>
-                    <View>
+                    <Text style={textStyles.paragraph}>When do you need a sitter?</Text>
+                    <View style={styles.fieldCard}>
                         <Text style={textStyles.sectionHeader}>Date</Text>
                         <DatePicker value={date}
                             onChange={(selectedDate) => setDate(selectedDate)} />
                     </View>
                     <View>
-                        <Text style={textStyles.sectionHeader}>Times</Text>
-                        <View style={layoutStyles.slotContainer}>
-                            <TimePicker
-                                value={startTime}
-                                onChange={(selectedDate) => setStartTime(toTimeString(selectedDate))}
-                            />
-                            <Text style={layoutStyles.separator}>-</Text>
-                            <TimePicker
-                                value={endTime}
-                                onChange={(selectedDate) => setEndTime(toTimeString(selectedDate))}
-                            />
+                        <View style={styles.fieldCard}>
+                            <Text style={textStyles.sectionHeader}>Times</Text>
+                            <View style={layoutStyles.slotContainer}>
+                                <TimePicker
+                                    value={startTime}
+                                    onChange={(selectedDate) => setStartTime(toTimeString(selectedDate))}
+                                />
+                                <Text style={layoutStyles.separator}>-</Text>
+                                <TimePicker
+                                    value={endTime}
+                                    onChange={(selectedDate) => setEndTime(toTimeString(selectedDate))}
+                                />
+
+                            </View>
+                            {!isValidSearch && (
+                                <View style={styles.errorMessage}>
+                                    <Text style={textStyles.error}>Start time must be before end time</Text>
+                                </View>
+                            )}
                         </View>
                     </View>
                 </View>
-                <CustomButton label="Search" onPressFn={() => router.push({ pathname: '/(owner)/sitters', params: { date: date.toISOString().split('T')[0], start_time: startTime, end_time: endTime } })} accesibilityLabel='Button for searching sitters based on the provided parameters'></CustomButton>
+                <CustomButton label="Search" variant="filled" onPressFn={handleSearch} disabled={!isValidSearch}
+                    accesibilityLabel='Button for searching sitters based on the provided parameters' />
             </View>
         </View>
     )
 }
 
-
-//TODO: Extract repeated styles 
 const styles = StyleSheet.create({
 
     scheduleForm: {
@@ -56,6 +68,15 @@ const styles = StyleSheet.create({
         flex: 1,
         gap: spacing.lg,
 
+    },
+    errorMessage: {
+        paddingBlock: spacing.sm
+    },
+    fieldCard: {
+        backgroundColor: colors.lightGray,
+        borderRadius: 12,
+        padding: spacing.md,
+        gap: spacing.sm,
     },
 
 })
