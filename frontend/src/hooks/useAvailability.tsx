@@ -33,6 +33,8 @@ export function useAvailability() {
             setLoadingDay(day)
             const { start_time, end_time } = getDefaultSlotTimes(day)
 
+
+
             const response = await fetch(`${BASE_URL}/slots/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -44,9 +46,9 @@ export function useAvailability() {
                 setAvailabilitySlots([...availabilitySlots, newSlot])
                 setLoadingDay(null)
             } else {
-                setLoadingDay(null)
-                setError('Slot unavailable to add.')
-
+                setLoadingSlotId(null)
+                const errorData = await response.json()
+                setError(errorData.non_field_errors?.[0] || 'Slot unavailable to add.')
             }
 
         }
@@ -69,7 +71,6 @@ export function useAvailability() {
                 setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
                 setLoadingSlotId(null)
             } else {
-                setLoadingSlotId(null)
                 setError('Slot unavailable to delete.')
             }
         }
@@ -81,6 +82,8 @@ export function useAvailability() {
     }
 
     const handleUpdateSlot = async (slot: AvailabilitySlot, time: string, selectedTime?: Date) => {
+        setError(null)
+
         setLoadingSlotId(slot.id)
 
 
@@ -95,26 +98,32 @@ export function useAvailability() {
             end_time = toTimeString(selectedTime.getHours())
         }
 
-        try {
-            const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: DEFAULT_SITTER_ID })
-            })
+        if (start_time < end_time) {
+            try {
+                const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: DEFAULT_SITTER_ID })
+                })
 
-            if (response.ok) {
-                const updatedSlot = await response.json()
+                if (response.ok) {
+                    const updatedSlot = await response.json()
 
-                setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
-                setLoadingSlotId(null)
-            } else {
-                setLoadingSlotId(null)
-                setError('Slot unavailable to update.')
+                    setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
+                    setLoadingSlotId(null)
+                } else {
+                    setLoadingSlotId(null)
+                    const errorData = await response.json()
+                    setError(errorData.non_field_errors?.[0] || 'Slot unavailable to update.')
+                }
             }
-        }
-        catch (error) {
+            catch (error) {
+                setLoadingSlotId(null)
+                setError('Connection lost. Try again later.')
+            }
+        } else {
             setLoadingSlotId(null)
-            setError('Connection lost. Try again later.')
+            setError('Invalidate times selected')
         }
 
     }
