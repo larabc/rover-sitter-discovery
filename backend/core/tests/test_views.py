@@ -60,6 +60,27 @@ class AvailableSlotViewTests(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(AvailableSlot.objects.count(), 2)
 
+    def test_create_slot_with_contiguous_slot_merge(self):
+        self.slot = AvailableSlot.objects.create(
+            sitter=self.sitter,
+            day_of_week=1,
+            start_time="09:00:00",
+            end_time="10:00:00",
+        )
+
+        response = self.client.post(
+            "/api/slots/",
+            {
+                "day_of_week": 1,
+                "start_time": "10:00:00",
+                "end_time": "14:00:00",
+                "sitter": self.sitter.id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(AvailableSlot.objects.count(), 2)
+
     def test_create_slot_with_invalid_data_returns_error(self):
         response = self.client.post(
             "/api/slots/",
@@ -71,6 +92,41 @@ class AvailableSlotViewTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(AvailableSlot.objects.count(), 1)
+
+    def test_create_slot_with_start_time_greater_than_end_time_returns_error(self):
+        response = self.client.post(
+            "/api/slots/",
+            {
+                "start_time": "14:00:00",
+                "end_time": "10:00:00",
+                "day_of_week": 2,
+                "sitter": self.sitter.id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["non_field_errors"][0],
+            "start time has to be sooner than end time",
+        )
+        self.assertEqual(AvailableSlot.objects.count(), 1)
+
+    def test_create_slot_with_overlapped_slot_returns_error(self):
+        response = self.client.post(
+            "/api/slots/",
+            {
+                "day_of_week": 0,
+                "start_time": "10:00:00",
+                "end_time": "16:00:00",
+                "sitter": 1,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["non_field_errors"][0],
+            "This time overlaps with an existing slot",
+        )
         self.assertEqual(AvailableSlot.objects.count(), 1)
 
     def test_update_slot(self):
@@ -86,6 +142,19 @@ class AvailableSlotViewTests(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(AvailableSlot.objects.count(), 1)
+
+    def test_update_slot_does_not_overlap_with_itself(self):
+        response = self.client.put(
+            f"/api/slots/{self.slot.id}/",
+            {
+                "day_of_week": 0,
+                "start_time": "09:00:00",
+                "end_time": "19:00:00",
+                "sitter": self.sitter.id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
 
     def test_update_nonexistent_slot_returns_error(self):
         response = self.client.put(
