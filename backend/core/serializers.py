@@ -40,7 +40,9 @@ class AvailableSlotSerializer(serializers.ModelSerializer):
             overlapping = overlapping.exclude(pk=self.instance.pk)
 
         if overlapping.exists():
-            raise serializers.ValidationError("Theres an overlapping between two slots")
+            raise serializers.ValidationError(
+                "This time overlaps with an existing slot"
+            )
 
         return data
 

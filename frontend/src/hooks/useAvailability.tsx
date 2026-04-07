@@ -3,6 +3,7 @@ import { toTimeString } from "../utils/timeUtils"
 import BASE_URL from "../api/client"
 import { AvailabilitySlot } from "../types/availability"
 import { DEFAULT_END_TIME, DEFAULT_START_TIME, DEFAULT_SITTER_ID } from "../constants/defaults"
+import Toast from 'react-native-toast-message';
 
 
 export function useAvailability() {
@@ -33,6 +34,8 @@ export function useAvailability() {
             setLoadingDay(day)
             const { start_time, end_time } = getDefaultSlotTimes(day)
 
+
+
             const response = await fetch(`${BASE_URL}/slots/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -45,8 +48,8 @@ export function useAvailability() {
                 setLoadingDay(null)
             } else {
                 setLoadingDay(null)
-                setError('Slot unavailable to add.')
-
+                const errorData = await response.json()
+                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to add.' })
             }
 
         }
@@ -70,7 +73,8 @@ export function useAvailability() {
                 setLoadingSlotId(null)
             } else {
                 setLoadingSlotId(null)
-                setError('Slot unavailable to delete.')
+                const errorData = await response.json()
+                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to delete.' })
             }
         }
         catch (error) {
@@ -81,8 +85,7 @@ export function useAvailability() {
     }
 
     const handleUpdateSlot = async (slot: AvailabilitySlot, time: string, selectedTime?: Date) => {
-        setLoadingSlotId(slot.id)
-
+        setError(null)
 
         let start_time = slot.start_time;
         let end_time = slot.end_time;
@@ -95,26 +98,34 @@ export function useAvailability() {
             end_time = toTimeString(selectedTime.getHours())
         }
 
-        try {
-            const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: DEFAULT_SITTER_ID })
-            })
+        if (start_time < end_time) {
+            setLoadingSlotId(slot.id)
 
-            if (response.ok) {
-                const updatedSlot = await response.json()
+            try {
+                const response = await fetch(`${BASE_URL}/slots/${slot.id}/`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ start_time: start_time, end_time: end_time, day_of_week: slot.day_of_week, sitter: DEFAULT_SITTER_ID })
+                })
 
-                setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
-                setLoadingSlotId(null)
-            } else {
-                setLoadingSlotId(null)
-                setError('Slot unavailable to update.')
+                if (response.ok) {
+                    const updatedSlot = await response.json()
+
+                    setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
+                    setLoadingSlotId(null)
+                } else {
+                    setLoadingSlotId(null)
+                    const errorData = await response.json()
+                    Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to update.' })
+                }
             }
-        }
-        catch (error) {
+            catch (error) {
+                setLoadingSlotId(null)
+                setError('Connection lost. Try again later.')
+            }
+        } else {
             setLoadingSlotId(null)
-            setError('Connection lost. Try again later.')
+            Toast.show({ type: 'error', text1: 'Start time must be before end time' })
         }
 
     }
