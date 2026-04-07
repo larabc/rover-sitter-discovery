@@ -4,6 +4,7 @@ import BASE_URL from "../api/client"
 import { AvailabilitySlot } from "../types/availability"
 import { DEFAULT_END_TIME, DEFAULT_START_TIME, DEFAULT_SITTER_ID } from "../constants/defaults"
 import Toast from 'react-native-toast-message';
+import { MESSAGES } from "../constants/messages"
 
 
 export function useAvailability() {
@@ -46,10 +47,11 @@ export function useAvailability() {
                 const newSlot = await response.json()
                 setAvailabilitySlots([...availabilitySlots, newSlot])
                 setLoadingDay(null)
+                Toast.show({ type: 'success', text1: MESSAGES.SLOT_ADDED })
             } else {
                 setLoadingDay(null)
                 const errorData = await response.json()
-                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to add.' })
+                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || MESSAGES.SLOT_ADD_ERROR })
             }
 
         }
@@ -71,15 +73,16 @@ export function useAvailability() {
             if (response.ok) {
                 setAvailabilitySlots(availabilitySlots.filter((slot) => slot.id !== id))
                 setLoadingSlotId(null)
+                Toast.show({ type: 'success', text1: MESSAGES.SLOT_DELETED })
             } else {
                 setLoadingSlotId(null)
                 const errorData = await response.json()
-                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to delete.' })
+                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || MESSAGES.SLOT_DELETE_ERROR })
             }
         }
         catch (error) {
             setLoadingSlotId(null)
-            setError('Connection lost. Try again later.')
+            setError(MESSAGES.CONNECTION_ERROR)
         }
 
     }
@@ -113,19 +116,20 @@ export function useAvailability() {
 
                     setAvailabilitySlots(availabilitySlots.map(slot => slot.id === updatedSlot.id ? updatedSlot : slot))
                     setLoadingSlotId(null)
+                    Toast.show({ type: 'success', text1: MESSAGES.SLOT_UPDATED })
                 } else {
                     setLoadingSlotId(null)
                     const errorData = await response.json()
-                    Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || 'Slot unavailable to update.' })
+                    Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || MESSAGES.SLOT_UPDATE_ERROR })
                 }
             }
             catch (error) {
                 setLoadingSlotId(null)
-                setError('Connection lost. Try again later.')
+                setError(MESSAGES.CONNECTION_ERROR)
             }
         } else {
             setLoadingSlotId(null)
-            Toast.show({ type: 'error', text1: 'Start time must be before end time' })
+            Toast.show({ type: 'error', text1: MESSAGES.INVALID_TIMES })
         }
 
     }
@@ -139,11 +143,11 @@ export function useAvailability() {
                     setIsLoading(false)
                 } else {
                     setIsLoading(false)
-                    setError('Unable to load availability. Try again later.')
+                    setError(MESSAGES.LOAD_ERROR)
                 }
             } catch (error) {
                 setIsLoading(false)
-                setError('Connection lost. Try again later.')
+                setError(MESSAGES.CONNECTION_ERROR)
             }
         }
         fetchSlots()
