@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Image } from 'react-native'
 import CustomButton from "../src/components/CustomButton"
 import React from 'react'
 import { useRouter } from 'expo-router';
@@ -11,11 +11,16 @@ export default function App() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <PawPrint size={iconSizes.large} color={colors.accent} />
-                <Text style={styles.text}>You are a dog...</Text>
+                <Image
+                    source={require('../../frontend/assets/undraw_friends_xscy.png')}
+                    style={{ width: 200, height: 200, alignItems: 'center', marginInline: 'auto', }}
+                />
+
+                <Text style={styles.text}>You are a pet...</Text>
             </View>
             <CustomButton label="Sitter" variant="filled" onPressFn={() => router.push('/(sitter)/availability')} accesibilityLabel='Button that goes to sitter availaibilty page' />
             <CustomButton label="Owner" variant="filled" onPressFn={() => router.push('/(owner)/search')} accesibilityLabel='Button that goes to owner role search page' />
+
         </View>
     )
 }
