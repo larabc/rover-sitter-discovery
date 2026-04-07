@@ -1,11 +1,14 @@
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
-import { colors, layoutStyles, spacing, textStyles } from '../../src/constants/theme'
+import { View, Text, StyleSheet, ActivityIndicator, useWindowDimensions, Pressable } from 'react-native'
+import { colors, iconSizes, layoutStyles, spacing, textStyles } from '../../src/constants/theme'
 import SitterCard from '../../src/components/SitterCard'
 import { useSitters } from '../../src/hooks/useSitters'
 import Header from '../../src/components/Header'
-import { Frown } from 'lucide-react-native'
+import { CalendarX, Frown } from 'lucide-react-native'
+import Loader from '../../src/components/Loader'
+import { Link, router } from 'expo-router'
 
 export default function Sitters() {
+    const { height } = useWindowDimensions()
     const { sitters, isLoading, error } = useSitters()
     return (
         <View style={layoutStyles.generalContainer}>
@@ -19,7 +22,7 @@ export default function Sitters() {
 
                 ) : isLoading ? (
                     <View style={layoutStyles.loadingContainer}>
-                        <ActivityIndicator size="large" color={colors.accent} />
+                        <Loader height={height} />
                     </View>
                 ) :
 
@@ -28,7 +31,13 @@ export default function Sitters() {
                             <SitterCard key={sitter.id} sitter={sitter} />
                         ))
                     ) : (
-                        <Text style={textStyles.sectionHeader}>No sitters available</Text>
+                        <View style={styles.noResultsContainer}>
+                            <CalendarX color={colors.navy} size={iconSizes.large} />
+                            <Text style={textStyles.sectionHeader}>No sitters found for this time</Text>
+                            <Pressable onPress={() => router.back()}>
+                                <Text style={layoutStyles.link}>Try a different time or date →</Text>
+                            </Pressable>
+                        </View>
                     )
                 }
             </View>
@@ -42,4 +51,9 @@ const styles = StyleSheet.create({
         gap: spacing.md,
         padding: spacing.lg,
     },
+    noResultsContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 });

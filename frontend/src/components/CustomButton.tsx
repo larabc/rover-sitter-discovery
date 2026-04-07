@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
     },
     filledButton: {
+        padding: spacing.md,
         backgroundColor: colors.accent,
         borderColor: colors.accent,
     },
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
         color: colors.primary,
         fontSize: textSizes.paragraph,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontWeight: 'normal',
     },
     filledText: {
         color: colors.white,

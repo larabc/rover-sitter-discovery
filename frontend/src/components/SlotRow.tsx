@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-nati
 import React from 'react'
 import { AvailabilitySlot } from '../types/availability'
 import { Trash2 } from 'lucide-react-native'
-import { colors, layoutStyles, spacing } from '../constants/theme'
+import { colors, iconSizes, layoutStyles, spacing } from '../constants/theme'
 import TimePicker from './TimePicker'
 
 interface SlotRowProps {
@@ -37,7 +37,7 @@ export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, l
                 <ActivityIndicator size="small" color={colors.accent} />
             ) : (
                 <Pressable onPress={() => onDeleteSlot(slot.id)} hitSlop={12} style={styles.iconButton}>
-                    <Trash2 color={colors.danger} size={20} />
+                    <Trash2 color={colors.red} size={iconSizes.medium} />
                 </Pressable>
             )}
         </View>

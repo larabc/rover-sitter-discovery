@@ -2,7 +2,7 @@ export const colors = {
     primary: '#404347',
     border: '#C9CFD4',
     white: '#FFFFFF',
-    accent: '#2e67d1',
+    accent: '#3f3d56',
     disabled: '#62686E',
     red: '#ba4747',
     green: '#1B6C42',
@@ -25,7 +25,7 @@ export const borderRadius = {
 
 export const textSizes = {
     title: 24,
-    paragraph: 16,
+    paragraph: 18,
     paragraphBig: 20,
 }
 
@@ -87,5 +87,10 @@ export const layoutStyles = {
     separator: {
         fontSize: 20,
         color: colors.border,
+    } as const,
+
+    link: {
+        textDecorationLine: 'underline',
+        color: colors.accent
     } as const,
 }
