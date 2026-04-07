@@ -3,7 +3,13 @@ export const colors = {
     border: '#C9CFD4',
     white: '#FFFFFF',
     accent: '#2e67d1',
-    disabled: '#62686E'
+    disabled: '#62686E',
+    red: '#ba4747',
+    green: '#1B6C42',
+    navy: '#1B2A4A',
+    lightGray: '#f8f9fb',
+    overlay: 'rgba(0,0,0,0.4)'
+
 };
 
 export const spacing = {
@@ -20,6 +26,13 @@ export const borderRadius = {
 export const textSizes = {
     title: 24,
     paragraph: 16,
+    paragraphBig: 20,
+}
+
+export const iconSizes = {
+    small: 20,
+    medium: 24,
+    large: 48
 }
 
 export const textStyles = {
@@ -29,12 +42,17 @@ export const textStyles = {
     },
     sectionHeader: {
         color: colors.primary,
+        paddingBlock: spacing.md,
+        fontSize: 16,
         fontWeight: 'bold' as const,
     },
     paragraph: {
         fontSize: textSizes.paragraph,
         color: colors.primary,
     },
+    error: {
+        color: colors.red
+    }
 }
 
 export const layoutStyles = {
@@ -44,7 +62,7 @@ export const layoutStyles = {
     },
     contentContainer: {
         flex: 1,
-        justifyContent: 'space-between',
+
     } as const,
     errorContainer: {
         flex: 1,

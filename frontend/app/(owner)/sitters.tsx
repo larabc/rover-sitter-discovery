@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
-import { colors, layoutStyles, textStyles } from '../../src/constants/theme'
+import { colors, layoutStyles, spacing, textStyles } from '../../src/constants/theme'
 import SitterCard from '../../src/components/SitterCard'
 import { useSitters } from '../../src/hooks/useSitters'
 import Header from '../../src/components/Header'
@@ -39,5 +39,7 @@ export default function Sitters() {
 const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
+        gap: spacing.md,
+        padding: spacing.lg,
     },
 });

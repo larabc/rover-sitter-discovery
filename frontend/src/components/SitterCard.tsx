@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
-import { colors, spacing, textStyles } from '../constants/theme'
+import { colors, spacing, textSizes, textStyles } from '../constants/theme'
 import { Sitter } from '../types/sitter'
 
 
@@ -24,34 +24,33 @@ export default function SitterCard({ sitter }: SitterCardProps) {
         </View>
     )
 }
-
 const styles = StyleSheet.create({
     card: {
         padding: spacing.lg,
         gap: spacing.md,
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderWidth: 1,
-        borderColor: colors.border
-
-
+        alignItems: 'center',
+        backgroundColor: colors.lightGray,
+        borderRadius: 12,
     },
     circle: {
-        backgroundColor: '#b4b4b4',
+        backgroundColor: colors.disabled,
         width: 48,
-        borderRadius: 48,
-
+        height: 48,
+        borderRadius: 24,
     },
     info: {
+        flex: 1,
         gap: 2,
     },
     priceAmount: {
         fontWeight: 'bold',
-        fontSize: 26,
-        color: '#1B6C42'
+        fontSize: textSizes.paragraphBig,
+        color: colors.green,
     },
     price: {
         color: colors.disabled,
-    }
-}
-);
+        fontSize: textSizes.paragraph,
+        textAlign: 'right',
+    },
+});

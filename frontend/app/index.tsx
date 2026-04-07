@@ -2,17 +2,20 @@ import { View, Text, StyleSheet } from 'react-native'
 import CustomButton from "../src/components/CustomButton"
 import React from 'react'
 import { useRouter } from 'expo-router';
-import { colors, spacing, textSizes } from '../src/constants/theme';
+import { colors, iconSizes, spacing, textSizes } from '../src/constants/theme';
+import { PawPrint } from 'lucide-react-native';
 
 export default function App() {
     const router = useRouter();
 
-
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>You are a dog...</Text>
-            <CustomButton label="Sitter" onPressFn={() => router.push('/(sitter)/availability')} accesibilityLabel='Button that goes to sitter availaibilty page'></CustomButton>
-            <CustomButton label="Owner" onPressFn={() => router.push('/(owner)/search')} accesibilityLabel='Button that goes to owner role search page'></CustomButton>
+            <View style={styles.header}>
+                <PawPrint size={iconSizes.large} color={colors.accent} />
+                <Text style={styles.text}>You are a dog...</Text>
+            </View>
+            <CustomButton label="Sitter" variant="filled" onPressFn={() => router.push('/(sitter)/availability')} accesibilityLabel='Button that goes to sitter availaibilty page' />
+            <CustomButton label="Owner" variant="filled" onPressFn={() => router.push('/(owner)/search')} accesibilityLabel='Button that goes to owner role search page' />
         </View>
     )
 }
@@ -23,6 +26,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: spacing.lg,
         gap: spacing.md,
+    },
+    header: {
+        alignItems: 'center',
+        gap: spacing.sm,
+        marginBottom: spacing.lg,
     },
     text: {
         color: colors.primary,
