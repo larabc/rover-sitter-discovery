@@ -2,8 +2,12 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import datetime
-from .models import Sitter, AvailableSlot
-from .serializers import SitterSerializer, AvailableSlotSerializer
+from .models import Sitter, AvailableSlot, DateOverride
+from .serializers import (
+    SitterSerializer,
+    AvailableSlotSerializer,
+    DateOverrideSerializer,
+)
 
 
 class AvailableSlotViewSet(viewsets.ModelViewSet):
@@ -51,13 +55,52 @@ class SitterSearchView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        slots = AvailableSlot.objects.filter(
+        overrides_for_date = DateOverride.objects.filter(date=date_str)
+
+        available_overrides = overrides_for_date.filter(
+            is_available=True,
+            start_time__lte=start_time_str,
+            end_time__gte=end_time_str,
+        )
+
+        weekly_slots_without_overrides = AvailableSlot.objects.exclude(
+            sitter__in=overrides_for_date.values_list("sitter", flat=True),
+        ).filter(
             day_of_week=weekday_from_date,
             start_time__lte=start_time_str,
             end_time__gte=end_time_str,
         )
 
-        sitters = Sitter.objects.filter(available_slots__in=slots)
+        sitter_with_available_weekly_slots = Sitter.objects.filter(
+            available_slots__in=weekly_slots_without_overrides
+        )
+
+        sitters_with_available_overrides = Sitter.objects.filter(
+            date_overrides__in=available_overrides
+        )
+
+        sitters = sitter_with_available_weekly_slots | sitters_with_available_overrides
+
         serializer = SitterSerializer(sitters, many=True)
+
+        return Response(serializer.data)
+
+
+class DateOverrideViewSet(viewsets.ModelViewSet):
+    queryset = DateOverride.objects.all()
+    serializer_class = DateOverrideSerializer
+
+    def list(self, request):
+        try:
+            id = int(request.query_params.get("id"))
+
+        except (ValueError, TypeError):
+            return Response(
+                {"error": "id must be a valid number"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        overrides = DateOverride.objects.filter(sitter_id=id)
+        serializer = DateOverrideSerializer(overrides, many=True)
 
         return Response(serializer.data)
