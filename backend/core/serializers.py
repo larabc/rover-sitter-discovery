@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Sitter, AvailableSlot
+from .models import Sitter, AvailableSlot, DateOverride
 from django.db.models import Q
 
 
@@ -79,3 +79,30 @@ class AvailableSlotSerializer(serializers.ModelSerializer):
             return first
 
         return super().create(validated_data)
+
+
+class DateOverrideSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DateOverride
+        fields = "__all__"
+
+    def validate(self, data):
+        is_available = data["is_available"]
+        date = data["date"]
+        start_time = data["start_time"]
+        end_time = data["end_time"]
+
+        if not date:
+            raise serializers.ValidationError("An override must provide a date")
+        if not is_available:
+            if start_time or end_time:
+                raise serializers.ValidationError(
+                    "An override can not be set as unavailable passing start or end time"
+                )
+        else:
+            if not start_time or not end_time:
+                raise serializers.ValidationError(
+                    "An override must have start and end time"
+                )
+
+        return data
