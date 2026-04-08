@@ -1,10 +1,8 @@
 import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { AvailabilitySlot } from '../types/availability'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { CirclePlus, Ban, SeparatorHorizontal } from 'lucide-react-native'
-import { colors, layoutStyles, spacing } from '../constants/theme'
-import { timeStringToDate } from '../utils/timeUtils'
+import { Trash2 } from 'lucide-react-native'
+import { colors, iconSizes, layoutStyles, spacing } from '../constants/theme'
 import TimePicker from './TimePicker'
 
 interface SlotRowProps {
@@ -21,8 +19,8 @@ export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, l
 }: SlotRowProps) {
 
     return (
-        <View style={layoutStyles.slotContainer}>
-            <View style={layoutStyles.slotContainer}>
+        <View style={styles.row}>
+            <View style={styles.timesContainer}>
                 <TimePicker
                     value={slot.start_time}
                     onChange={(selectedDate) => onUpdateSlot(slot, 'start_time', selectedDate)}
@@ -33,33 +31,32 @@ export default function SlotRow({ slot, onDeleteSlot, onAddSlot, onUpdateSlot, l
                     value={slot.end_time}
                     onChange={(selectedDate) => onUpdateSlot(slot, 'end_time', selectedDate)}
                     disabled={isDisabled}
-
                 />
             </View>
-            <View style={styles.btnsContainer}>
-                {
-                    slot.id === loadingSlotId ? (
-                        <ActivityIndicator size="small" color={colors.accent} />
-                    ) : (
-                        <Pressable onPress={() => onDeleteSlot(slot.id)}>
-                            <Ban />
-                        </Pressable>
-                    )
-                }
-
-                <Pressable onPress={onAddSlot}>
-                    <CirclePlus color={colors.accent} />
+            {slot.id === loadingSlotId ? (
+                <ActivityIndicator size="small" color={colors.accent} />
+            ) : (
+                <Pressable onPress={() => onDeleteSlot(slot.id)} hitSlop={12} style={styles.iconButton}>
+                    <Trash2 color={colors.red} size={iconSizes.medium} />
                 </Pressable>
-            </View>
+            )}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    btnsContainer: {
-        gap: spacing.sm,
+    row: {
         flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.sm,
     },
-
-
+    timesContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.sm,
+        flex: 1,
+    },
+    iconButton: {
+        padding: spacing.sm,
+    },
 });

@@ -5,6 +5,7 @@ jest.mock('react-native-toast-message', () => ({
 import Toast from 'react-native-toast-message'
 import { renderHook, waitFor, act } from '@testing-library/react-native'
 import { useAvailability } from '../useAvailability'
+import { MESSAGES } from '../../constants/messages'
 
 describe('useAvailability', () => {
 
@@ -52,7 +53,7 @@ describe('useAvailability', () => {
             expect(result.current.isLoading).toBe(false)
         })
         expect(result.current.availabilitySlots).toHaveLength(0)
-        expect(result.current.error).toBe('Unable to load availability. Try again later.')
+        expect(result.current.error).toBe(MESSAGES.LOAD_ERROR)
     })
 
     test('network error sets connection error message', async () => {
@@ -66,8 +67,61 @@ describe('useAvailability', () => {
             expect(result.current.isLoading).toBe(false)
         })
 
-        expect(result.current.error).toBe('Connection lost. Try again later.')
+        expect(result.current.error).toBe(MESSAGES.CONNECTION_ERROR)
     })
+
+    test('handleUpdateSlot shows toast when a slot is successfully updated by start time', async () => {
+        const mockSlot = { id: 1, day_of_week: 0, start_time: '09:00:00', end_time: '18:00:00', sitter: 1 }
+
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            json: async () => [mockSlot]
+        })
+
+        const { result } = renderHook(() => useAvailability())
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false)
+        })
+
+        await act(async () => {
+            result.current.handleUpdateSlot(mockSlot, 'start_time', new Date(2026, 0, 1, 9, 0))
+        })
+
+        expect(result.current.availabilitySlots).toHaveLength(1)
+        expect(Toast.show).toHaveBeenCalledWith({
+            type: 'success',
+            text1: MESSAGES.SLOT_UPDATED
+        })
+        expect(fetch).toHaveBeenCalledTimes(2)
+    })
+
+    test('handleUpdateSlot shows toast when a slot is successfully updated by end time', async () => {
+        const mockSlot = { id: 1, day_of_week: 0, start_time: '09:00:00', end_time: '18:00:00', sitter: 1 }
+
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            json: async () => [mockSlot]
+        })
+
+        const { result } = renderHook(() => useAvailability())
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false)
+        })
+
+        await act(async () => {
+            result.current.handleUpdateSlot(mockSlot, 'end_time', new Date(2026, 0, 1, 20, 0))
+        })
+
+        expect(result.current.availabilitySlots).toHaveLength(1)
+        expect(Toast.show).toHaveBeenCalledWith({
+            type: 'success',
+            text1: MESSAGES.SLOT_UPDATED
+        })
+        expect(fetch).toHaveBeenCalledTimes(2)
+    })
+
 
     test('handleUpdateSlot shows toast when start_time >= end_time', async () => {
         const mockSlot = { id: 1, day_of_week: 0, start_time: '09:00:00', end_time: '18:00:00', sitter: 1 }
@@ -90,7 +144,7 @@ describe('useAvailability', () => {
         expect(result.current.availabilitySlots).toHaveLength(1)
         expect(Toast.show).toHaveBeenCalledWith({
             type: 'error',
-            text1: 'Start time must be before end time'
+            text1: MESSAGES.INVALID_TIMES
         })
         expect(fetch).toHaveBeenCalledTimes(1)
 
@@ -106,7 +160,7 @@ describe('useAvailability', () => {
             })
             .mockResolvedValueOnce({
                 ok: false,
-                json: async () => ({ non_field_errors: ['This time overlaps with an existing slot'] })
+                json: async () => ({ non_field_errors: [MESSAGES.OVERLAP_ERROR] })
             })
 
         const { result } = renderHook(() => useAvailability())
@@ -122,9 +176,39 @@ describe('useAvailability', () => {
         expect(result.current.availabilitySlots).toHaveLength(1)
         expect(Toast.show).toHaveBeenCalledWith({
             type: 'error',
-            text1: 'This time overlaps with an existing slot'
+            text1: MESSAGES.OVERLAP_ERROR
         })
 
+    })
+
+    test('handleAddSlot shows success toast when a new slot is created successfully', async () => {
+        const newSlot = { id: 2, day_of_week: 1, start_time: '09:00:00', end_time: '13:00:00', sitter: 1 }
+
+        global.fetch = jest.fn()
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => []
+            })
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => newSlot
+            })
+
+        const { result } = renderHook(() => useAvailability())
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false)
+        })
+
+        await act(async () => {
+            result.current.handleAddSlot(1)
+        })
+
+        expect(result.current.availabilitySlots).toHaveLength(1)
+        expect(Toast.show).toHaveBeenCalledWith({
+            type: 'success',
+            text1: MESSAGES.SLOT_ADDED
+        })
     })
 
     test('handleAddSlot shows toast when backend denies because overlapping with existing slot', async () => {
@@ -137,7 +221,7 @@ describe('useAvailability', () => {
             })
             .mockResolvedValueOnce({
                 ok: false,
-                json: async () => ({ non_field_errors: ['This time overlaps with an existing slot'] })
+                json: async () => ({ non_field_errors: [MESSAGES.OVERLAP_ERROR] })
             })
 
         const { result } = renderHook(() => useAvailability())
@@ -153,7 +237,67 @@ describe('useAvailability', () => {
         expect(result.current.availabilitySlots).toHaveLength(1)
         expect(Toast.show).toHaveBeenCalledWith({
             type: 'error',
-            text1: 'This time overlaps with an existing slot'
+            text1: MESSAGES.OVERLAP_ERROR
+        })
+    })
+
+    test('handleDeleteSlot shows toast when successfully deletes an existing slot', async () => {
+        const mockSlot = { id: 1, day_of_week: 0, start_time: '09:00:00', end_time: '18:00:00', sitter: 1 }
+
+        global.fetch = jest.fn()
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => [mockSlot]
+            })
+            .mockResolvedValueOnce({
+                ok: true,
+            })
+
+        const { result } = renderHook(() => useAvailability())
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false)
+        })
+
+        await act(async () => {
+            result.current.handleDeleteSlot(1)
+        })
+
+        expect(result.current.availabilitySlots).toHaveLength(0)
+        expect(Toast.show).toHaveBeenCalledWith({
+            type: 'success',
+            text1: MESSAGES.SLOT_DELETED
+        })
+    })
+
+    test('handleDeleteSlot shows toast when backend denies to delete an existing slot', async () => {
+        const mockSlot = { id: 1, day_of_week: 0, start_time: '09:00:00', end_time: '18:00:00', sitter: 1 }
+
+        global.fetch = jest.fn()
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => [mockSlot]
+            })
+            .mockResolvedValueOnce({
+                ok: false,
+                json: async () => ({ non_field_errors: [MESSAGES.SLOT_DELETE_ERROR] })
+
+            })
+
+        const { result } = renderHook(() => useAvailability())
+
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false)
+        })
+
+        await act(async () => {
+            result.current.handleDeleteSlot(1)
+        })
+
+        expect(result.current.availabilitySlots).toHaveLength(1)
+        expect(Toast.show).toHaveBeenCalledWith({
+            type: 'error',
+            text1: MESSAGES.SLOT_DELETE_ERROR
         })
     })
 })
