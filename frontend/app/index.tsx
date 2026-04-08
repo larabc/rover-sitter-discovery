@@ -3,7 +3,6 @@ import CustomButton from "../src/components/CustomButton"
 import React from 'react'
 import { useRouter } from 'expo-router';
 import { colors, iconSizes, spacing, textSizes } from '../src/constants/theme';
-import { PawPrint } from 'lucide-react-native';
 
 export default function App() {
     const router = useRouter();
