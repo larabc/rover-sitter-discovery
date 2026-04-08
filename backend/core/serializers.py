@@ -89,8 +89,8 @@ class DateOverrideSerializer(serializers.ModelSerializer):
     def validate(self, data):
         is_available = data["is_available"]
         date = data["date"]
-        start_time = data["start_time"]
-        end_time = data["end_time"]
+        start_time = data.get("start_time")
+        end_time = data.get("end_time")
 
         if not date:
             raise serializers.ValidationError("An override must provide a date")
