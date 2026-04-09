@@ -2,15 +2,23 @@ export const colors = {
     primary: '#404347',
     border: '#C9CFD4',
     white: '#FFFFFF',
-    accent: '#3f3d56',
+    accent: '#2E67D1',
     disabled: '#62686E',
     red: '#ba4747',
     green: '#1B6C42',
     navy: '#1B2A4A',
     lightGray: '#f8f9fb',
-    overlay: 'rgba(0,0,0,0.4)'
+    gray: '#6B7280',
+    overlay: 'rgba(0,0,0,0.4)',
+    black: '#000',
+    background: '#F6E8DF'
 
 };
+
+
+export const fontFamilyTitle = {
+    frauncesSemiBold: 'Fraunces_600SemiBold'
+}
 
 export const spacing = {
     sm: 8,
@@ -24,6 +32,7 @@ export const borderRadius = {
 };
 
 export const textSizes = {
+    titleLarge: 32,
     title: 24,
     paragraph: 18,
     paragraphBig: 20,
@@ -38,12 +47,13 @@ export const iconSizes = {
 export const textStyles = {
     displayHeader: {
         fontSize: textSizes.title,
-        fontWeight: 'bold' as const,
+        fontFamily: fontFamilyTitle.frauncesSemiBold
+
     },
     sectionHeader: {
         color: colors.primary,
         paddingBlock: spacing.md,
-        fontSize: 16,
+        fontSize: textSizes.paragraphBig,
         fontWeight: 'bold' as const,
     },
     paragraph: {

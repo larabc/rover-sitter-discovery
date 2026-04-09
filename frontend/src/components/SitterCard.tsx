@@ -19,7 +19,7 @@ export default function SitterCard({ sitter }: SitterCardProps) {
             />
             <View style={styles.info}>
                 <Text style={textStyles.sectionHeader}>{sitter.name}</Text>
-                <Text numberOfLines={1}>{sitter.bio}</Text>
+                <Text style={styles.bio} numberOfLines={1}>{sitter.bio}</Text>
                 <Text>{sitter.location}</Text>
             </View>
             <View>
@@ -35,17 +35,30 @@ const styles = StyleSheet.create({
         gap: spacing.md,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: colors.lightGray,
-        borderRadius: 12,
+        backgroundColor: colors.white,
+        borderRadius: 16,
+        shadowColor: colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 2,
     },
     circle: {
-        width: 56,
-        height: 56,
-        borderRadius: 48,
+        width: 64,
+        height: 64,
+        borderRadius: 32,
     },
     info: {
         flex: 1,
         gap: 2,
+    },
+    bio: {
+        color: colors.gray,
+        fontSize: textSizes.paragraph,
+    },
+    location: {
+        color: colors.gray,
+        fontSize: textSizes.paragraph,
     },
     priceAmount: {
         fontWeight: 'bold',

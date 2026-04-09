@@ -6,9 +6,10 @@ import { colors, spacing } from '../constants/theme'
 interface DatePickerProps {
     value: Date,
     onChange: (selectedDate: Date) => void,
+    isInline?: boolean,
 }
 
-export default function DatePicker({ value, onChange }: DatePickerProps) {
+export default function DatePicker({ value, onChange, isInline = false }: DatePickerProps) {
     const [showPicker, setShowPicker] = useState(false)
 
     const handlePress = () => {
@@ -30,8 +31,10 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
 
     return (
         <>
-            <Pressable style={styles.dateInput} onPress={handlePress}>
-                <Text style={styles.dateText}>{value.toDateString()}</Text>
+            <Pressable style={isInline ? undefined : styles.dateInput} onPress={handlePress}>
+                <Text style={[styles.dateText, isInline && {
+                    color: colors.accent, textDecorationLine: 'underline',
+                }]}>{value.toDateString()}</Text>
             </Pressable>
 
             {Platform.OS === 'ios' && showPicker && (
@@ -43,7 +46,6 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
                                 mode="date"
                                 display="spinner"
                                 minimumDate={new Date()}
-
                                 onChange={(event, selectedDate) => {
                                     if (event.type === 'set' && selectedDate) {
                                         onChange(selectedDate)

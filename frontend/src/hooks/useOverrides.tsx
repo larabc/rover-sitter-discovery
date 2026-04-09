@@ -13,7 +13,6 @@ export function useOverrides() {
     const [loadingSlotId, setLoadingSlotId] = useState<null | number>(null)
     const [error, setError] = useState<null | string>(null)
 
-
     const handleDateChange = async (override: DateOverride, newDate: Date) => {
         setLoadingSlotId(override.id)
 
@@ -182,6 +181,39 @@ export function useOverrides() {
 
     }
 
+    const handleToggleAvailable = async (override: DateOverride) => {
+        setLoadingSlotId(override.id)
+        const newIsAvailable = !override.is_available
+
+        try {
+            const response = await fetch(`${BASE_URL}/overrides/${override.id}/`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    date: override.date,
+                    start_time: newIsAvailable ? DEFAULT_START_TIME : null,
+                    end_time: newIsAvailable ? DEFAULT_END_TIME : null,
+                    is_available: newIsAvailable,
+                    sitter: DEFAULT_SITTER_ID
+                })
+            })
+            if (response.ok) {
+                const updatedOverride = await response.json()
+                setOverrides(overrides.map(o => o.id === updatedOverride.id ? updatedOverride : o))
+                setLoadingSlotId(null)
+                Toast.show({ type: 'success', text1: MESSAGES.SLOT_UPDATED })
+            } else {
+                setLoadingSlotId(null)
+                const errorData = await response.json()
+                Toast.show({ type: 'error', text1: errorData.non_field_errors?.[0] || MESSAGES.SLOT_UPDATE_ERROR })
+            }
+        } catch (error) {
+            setLoadingSlotId(null)
+            setError(MESSAGES.CONNECTION_ERROR)
+        }
+    }
+
+
 
 
     useEffect(() => {
@@ -216,5 +248,6 @@ export function useOverrides() {
         handleStartTimeChange,
         handleEndTimeChange,
         handleDateChange,
+        handleToggleAvailable
     }
 }

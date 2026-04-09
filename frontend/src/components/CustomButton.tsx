@@ -23,15 +23,15 @@ export default function CustomButton({ label, Icon, onPressFn, accesibilityLabel
 
 const styles = StyleSheet.create({
     button: {
-        padding: spacing.sm,
+        padding: spacing.md,
         borderRadius: borderRadius.pill,
-        borderColor: colors.border,
-        borderWidth: 3,
+        backgroundColor: colors.white
     },
     filledButton: {
         padding: spacing.md,
         backgroundColor: colors.accent,
         borderColor: colors.accent,
+        borderWidth: 3,
     },
     text: {
         color: colors.primary,

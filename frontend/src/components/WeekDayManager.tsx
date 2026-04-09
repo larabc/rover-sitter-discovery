@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { AvailabilitySlot, DayOfWeek } from '../types/availability'
-import { colors, iconSizes, spacing } from '../../src/constants/theme';
+import { colors, fontFamilyTitle, iconSizes, spacing, textSizes } from '../../src/constants/theme';
 import SlotRow from '../../src/components/SlotRow';
 import { CirclePlus } from 'lucide-react-native';
 
@@ -38,7 +38,7 @@ export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, on
                     )}
                 </>
             ) : (
-                <Text style={styles.unavailableText}>Unavailable</Text>
+                <Text style={styles.unavailableText}>Not available this day</Text>
             )}
         </View>
     )
@@ -46,13 +46,13 @@ export default function WeekDayManager({ day, slots, onAddSlot, onDeleteSlot, on
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: colors.lightGray,
+        backgroundColor: colors.white,
         borderRadius: 12,
         padding: spacing.md,
         gap: spacing.sm,
     },
     cardUnavailable: {
-        backgroundColor: 'transparent',
+        backgroundColor: '#d0d0d035',
         borderWidth: 1,
         borderColor: colors.border,
         borderStyle: 'dashed',
@@ -63,9 +63,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     title: {
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: textSizes.paragraph,
         color: colors.primary,
+        fontFamily: fontFamilyTitle.frauncesSemiBold
     },
     unavailableText: {
         color: colors.disabled,
