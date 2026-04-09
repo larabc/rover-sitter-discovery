@@ -9,12 +9,12 @@ export default function App() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Image
-                    source={require('../../frontend/assets/undraw_friends_xscy.png')}
-                    style={{ width: 200, height: 200, alignItems: 'center', marginInline: 'auto', }}
-                />
 
+            <Image
+                source={require('../../frontend/assets/image.png')}
+                style={{ width: 200, height: 200, alignItems: 'center', marginInline: 'auto', }}
+            />
+            <View style={styles.header}>
                 <Text style={styles.text}>You are a pet...</Text>
             </View>
             <CustomButton label="Sitter" variant="filled" onPressFn={() => router.push('/(sitter)/availability')} accesibilityLabel='Button that goes to sitter availaibilty page' />
@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     },
     text: {
         color: colors.primary,
-        fontSize: textSizes.title,
+        fontSize: textSizes.titleLarge,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: "Fraunces_600SemiBold"
     }
 });
