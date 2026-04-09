@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 import { colors, spacing, textSizes, textStyles } from '../constants/theme'
 import { Sitter } from '../types/sitter'
@@ -11,7 +11,12 @@ interface SitterCardProps {
 export default function SitterCard({ sitter }: SitterCardProps) {
     return (
         <View style={styles.card}>
-            <View style={styles.circle} />
+            <Image
+                source={sitter.avatar_url
+                    ? { uri: sitter.avatar_url }
+                    : require("../../assets/user.png")}
+                style={styles.circle}
+            />
             <View style={styles.info}>
                 <Text style={textStyles.sectionHeader}>{sitter.name}</Text>
                 <Text numberOfLines={1}>{sitter.bio}</Text>
@@ -34,10 +39,9 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     circle: {
-        backgroundColor: colors.disabled,
-        width: 48,
-        height: 48,
-        borderRadius: 24,
+        width: 56,
+        height: 56,
+        borderRadius: 48,
     },
     info: {
         flex: 1,
