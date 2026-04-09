@@ -15,7 +15,7 @@ export default function Loader({ height }: LoaderProps) {
                 source={require('../../assets/loader_cat.json')}
                 autoPlay
                 loop
-                style={{ width: 120, height: 120 }}
+                style={{ width: 200, height: 200 }}
             />
             <Text style={styles.text}>Loading...</Text>
         </View>
