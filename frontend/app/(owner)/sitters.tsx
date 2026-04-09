@@ -5,15 +5,23 @@ import { useSitters } from '../../src/hooks/useSitters'
 import Header from '../../src/components/Header'
 import { CalendarX, Frown } from 'lucide-react-native'
 import Loader from '../../src/components/Loader'
-import { Link, router } from 'expo-router'
+import { Link, router, useLocalSearchParams } from 'expo-router'
 
 export default function Sitters() {
     const { height } = useWindowDimensions()
     const { sitters, isLoading, error } = useSitters()
+    const { date, start_time, end_time } = useLocalSearchParams();
+    const formattedDate = new Date(date as string).toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+    });
     return (
         <View style={layoutStyles.generalContainer}>
             <Header label='Sitters' />
             <View style={styles.contentContainer}>
+                <Text style={styles.dateSelected}>Available on {formattedDate} · {(start_time as string).slice(0, 5)} - {(end_time as string).slice(0, 5)}:</Text>
+
                 {error ? (
                     <View style={layoutStyles.errorContainer}>
                         <Frown />
@@ -53,6 +61,17 @@ const styles = StyleSheet.create({
     },
     noResultsContainer: {
         flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    dateSelected: {
+        fontSize: 16,
+        color: colors.gray,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 20,
+        alignSelf: "flex-start",
+        overflow: "hidden",
         alignItems: 'center',
         justifyContent: 'center'
     }

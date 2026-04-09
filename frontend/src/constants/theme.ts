@@ -10,9 +10,15 @@ export const colors = {
     lightGray: '#f8f9fb',
     gray: '#6B7280',
     overlay: 'rgba(0,0,0,0.4)',
+    black: '#000',
     background: '#F6E8DF'
 
 };
+
+
+export const fontFamilyTitle = {
+    frauncesSemiBold: 'Fraunces_600SemiBold'
+}
 
 export const spacing = {
     sm: 8,
@@ -41,7 +47,7 @@ export const iconSizes = {
 export const textStyles = {
     displayHeader: {
         fontSize: textSizes.title,
-        fontFamily: "Fraunces_600SemiBold"
+        fontFamily: fontFamilyTitle.frauncesSemiBold
 
     },
     sectionHeader: {

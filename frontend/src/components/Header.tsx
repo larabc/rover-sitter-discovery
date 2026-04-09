@@ -13,7 +13,7 @@ interface HeaderProps {
 export default function Header({ label, isBackButtonVisible = true }: HeaderProps) {
     return (
         <View style={styles.header}>
-            {isBackButtonVisible && <CustomButton Icon={ArrowLeft} onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />}
+            {isBackButtonVisible && <CustomButton Icon={ArrowLeft} variant='outlined' onPressFn={() => router.back()} accesibilityLabel='Button for going back to home page' />}
             <Text style={textStyles.displayHeader}>{label}</Text>
         </View>
     )

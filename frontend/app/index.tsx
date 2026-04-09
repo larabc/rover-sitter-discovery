@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Image } from 'react-native'
 import CustomButton from "../src/components/CustomButton"
 import React from 'react'
 import { useRouter } from 'expo-router';
-import { colors, iconSizes, spacing, textSizes } from '../src/constants/theme';
+import { colors, fontFamilyTitle, spacing, textSizes } from '../src/constants/theme';
 
 export default function App() {
     const router = useRouter();
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
         color: colors.primary,
         fontSize: textSizes.titleLarge,
         textAlign: 'center',
-        fontFamily: "Fraunces_600SemiBold"
+        fontFamily: fontFamilyTitle.frauncesSemiBold
+
     }
 });
