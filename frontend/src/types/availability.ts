@@ -13,3 +13,11 @@ export interface AvailabilitySlot {
     day_of_week: DayOfWeek,
     id: number
 }
+
+export interface DateOverride {
+    id: number,
+    start_time: string | null,
+    end_time: string | null,
+    date: string,
+    is_available: boolean,
+}

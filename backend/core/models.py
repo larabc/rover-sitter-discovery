@@ -11,6 +11,7 @@ class Sitter(models.Model):
     bio = models.TextField(blank=True)
     price_per_night = models.DecimalField(max_digits=6, decimal_places=2)
     location = models.CharField(max_length=100)
+    avatar_url = models.CharField(max_length=255, default="", blank=True)
 
     def __str__(self):
         return self.name

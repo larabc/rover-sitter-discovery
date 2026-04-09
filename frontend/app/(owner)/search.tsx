@@ -44,7 +44,6 @@ export default function Search() {
                                     value={endTime}
                                     onChange={(selectedDate) => setEndTime(toTimeString(selectedDate))}
                                 />
-
                             </View>
                             {!isValidSearch && (
                                 <View style={styles.errorMessage}>
