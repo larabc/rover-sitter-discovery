@@ -79,7 +79,9 @@ class SitterSearchView(APIView):
             date_overrides__in=available_overrides
         )
 
-        sitters = sitter_with_available_weekly_slots | sitters_with_available_overrides
+        sitters = (
+            sitter_with_available_weekly_slots | sitters_with_available_overrides
+        ).distinct()
 
         serializer = SitterSerializer(sitters, many=True)
 
