@@ -4,4 +4,5 @@ export interface Sitter {
     price_per_night: number,
     location: string,
     id: number,
+    avatar_url: string,
 }
