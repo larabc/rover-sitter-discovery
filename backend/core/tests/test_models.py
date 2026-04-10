@@ -9,7 +9,7 @@ class AvailableSlotModelTests(TestCase):
             name="Test Sitter",
             email="test@test.com",
             bio="Test bio",
-            price_per_night=50.00,
+            price=50.00,
             location="Barcelona",
         )
         self.slot = AvailableSlot.objects.create(
@@ -40,7 +40,7 @@ class SitterModelTests(TestCase):
             name="Ananda",
             email="ananda@gmail.com",
             bio="hello :D",
-            price_per_night=23,
+            price=23,
             location="Barcelona",
         )
 
@@ -52,7 +52,7 @@ class SitterModelTests(TestCase):
         self.assertEqual(self.sitter.email, "ananda@gmail.com")
         self.assertEqual(self.sitter.location, "Barcelona")
         self.assertEqual(self.sitter.bio, "hello :D")
-        self.assertEqual(self.sitter.price_per_night, 23)
+        self.assertEqual(self.sitter.price, 23)
 
     def test_email_is_unique(self):
         with self.assertRaises(IntegrityError):
@@ -60,6 +60,6 @@ class SitterModelTests(TestCase):
                 name="Otro Sitter",
                 email="ananda@gmail.com",
                 bio="",
-                price_per_night=30,
+                price=30,
                 location="Madrid",
             )

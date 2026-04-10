@@ -9,7 +9,7 @@ class AvailableSlotViewTests(APITestCase):
             name="Test Sitter",
             email="test@test.com",
             bio="Test bio",
-            price_per_night=50.00,
+            price=50.00,
             location="Barcelona",
         )
         self.slot = AvailableSlot.objects.create(
@@ -39,7 +39,7 @@ class AvailableSlotViewTests(APITestCase):
             name="Empty Sitter",
             email="empty@test.com",
             bio="",
-            price_per_night=30.00,
+            price=30.00,
             location="Madrid",
         )
         response = self.client.get(f"/api/slots/?id={sitter_without_slots.id}")
@@ -192,7 +192,7 @@ class SitterViewSet(APITestCase):
             name="Test Sitter",
             email="test@test.com",
             bio="Test bio",
-            price_per_night=50.00,
+            price=50.00,
             location="Barcelona",
         )
 
@@ -203,7 +203,7 @@ class SitterViewSet(APITestCase):
                 "name": "Otro Sitter",
                 "email": "test1@test.com",
                 "bio": "",
-                "price_per_night": 30,
+                "price": 30,
                 "location": "Madrid",
             },
         )
@@ -216,7 +216,7 @@ class SitterViewSet(APITestCase):
                 "name": "Otro Sitter",
                 "email": "test@test.com",
                 "bio": "",
-                "price_per_night": 30,
+                "price": 30,
                 "location": "Madrid",
             },
             format="json",
@@ -232,7 +232,7 @@ class SitterSearchView(APITestCase):
             name="Test Sitter",
             email="test@test.com",
             bio="Test bio",
-            price_per_night=50.00,
+            price=50.00,
             location="Barcelona",
         )
         self.slot = AvailableSlot.objects.create(

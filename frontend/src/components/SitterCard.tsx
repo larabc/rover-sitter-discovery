@@ -23,7 +23,7 @@ export default function SitterCard({ sitter }: SitterCardProps) {
                 <Text>{sitter.location}</Text>
             </View>
             <View>
-                <Text style={styles.priceAmount}>{sitter.price_per_night}€</Text>
+                <Text style={styles.priceAmount}>{sitter.price}€</Text>
                 <Text style={styles.price}>per night</Text>
             </View>
         </View>
