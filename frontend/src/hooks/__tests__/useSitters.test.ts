@@ -22,7 +22,7 @@ describe('useSitters', () => {
     test('Fetch sitters successfully sets sitters and isLoading false', async () => {
         global.fetch = jest.fn().mockResolvedValue({
             ok: true,
-            json: async () => [{ name: 'Ananda', bio: 'test bio', price_per_night: 25, location: 'Barcelona', id: 1 }]
+            json: async () => [{ name: 'Ananda', bio: 'test bio', price: 25, location: 'Barcelona', id: 1 }]
         })
         const { result } = renderHook(() => useSitters())
 
